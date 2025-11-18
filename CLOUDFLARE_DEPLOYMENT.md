@@ -1,46 +1,60 @@
 # 🚀 Guide de Déploiement Cloudflare Pages
 
-## ⚠️ Problème Courant
+## ⚠️ Problème Identifié
 
-Si vous obtenez l'erreur `ENOENT: no such file or directory, open '/opt/buildhome/repo/package.json'`, c'est que Cloudflare Pages déploie depuis le **mauvais commit**.
+L'erreur `ENOENT: no such file or directory, open '/opt/buildhome/repo/package.json'` indique que **Cloudflare Pages déploie le mauvais commit**.
 
 ### Diagnostic
 
-Vérifiez dans les logs de build :
+Dans les logs de build Cloudflare :
 ```
 HEAD is now at 448c87f Ajout du Visualisateur de Stacks Réseau Audio : Dante & AES67
 ```
 
-Si vous voyez le commit `448c87f`, c'est le **premier commit** qui contenait uniquement un fichier `index.html` unique, SANS la structure npm.
+Le commit `448c87f` est **obsolète** - il contient uniquement `index.html` **SANS la structure npm moderne**.
 
-## ✅ Solution
+### ✅ Commit Correct
 
-### 1. Vérifier la Branche de Déploiement
+Utilisez le commit **9b635af** ou plus récent :
+```
+9b635af Mise à jour Node.js 23 + Configuration Cloudflare Pages optimisée
+```
 
-Dans Cloudflare Pages Dashboard :
-1. Allez dans votre projet Pages
+Ce commit contient :
+- ✅ `package.json` avec scripts de build
+- ✅ Configuration Vite moderne
+- ✅ Structure `src/` et `public/`
+- ✅ Node.js 23
+
+## 🔧 Solution : Configuration Cloudflare Dashboard
+
+### 1. Configurer la Branche de Production
+
+**Dans Cloudflare Pages Dashboard** :
+1. Allez dans votre projet
 2. **Settings** > **Builds & deployments**
-3. Vérifiez **Production branch**
+3. **Production branch** → Changez pour :
+   - `claude/fix-cloudflare-build-01PrQYVHc9VDeV1DfZay51Mw` ✅ (branche actuelle)
+   - OU `main` (après merge)
 
-**Branches valides** :
-- `claude/audio-network-visualizer-019F6xgvPPLa5nKc1h587Wws` (branche feature actuelle)
-- `main` (après merge de la feature branch)
-
-**❌ NE PAS utiliser** :
-- Commit `448c87f` directement
-- Tags obsolètes
+**❌ NE PAS UTILISER** :
+- Commit SHA `448c87f` directement
+- Anciennes branches obsolètes
 
 ### 2. Configuration Build Cloudflare Pages
 
 Dans **Settings** > **Build configuration** :
 
 ```
-Framework preset: None (ou Vite)
-Build command: npm run build
+Framework preset: Vite
+Build command: npm install && npm run build
 Build output directory: dist
-Root directory: / (racine)
-Node.js version: 23 (ou latest)
+Root directory: (laisser vide = racine)
+Node.js version: 23
+Environment variables: NODE_VERSION=23
 ```
+
+**Important** : Assurez-vous que la commande de build inclut `npm install &&` pour installer les dépendances.
 
 ### 3. Variables d'Environnement (Optionnel)
 
@@ -59,32 +73,46 @@ Le projet contient déjà tous les fichiers nécessaires :
 - `wrangler.toml` → Config Wrangler
 - `package.json` → Engines Node >=23.0.0
 
-## 🔄 Redéploiement
+## 🔄 Redéploiement Immédiat
 
-### Option A : Via Dashboard
+### Étape 1 : Vérifier que la configuration a été mise à jour
+
+Cloudflare a automatiquement détecté les fichiers de configuration suivants :
+- `.cloudflare/pages.json` ✅
+- `wrangler.toml` ✅
+
+### Étape 2 : Déclencher un nouveau build
+
+**Option A : Via Dashboard (Recommandé)**
 
 1. Allez dans **Deployments**
-2. Cliquez sur **...** > **Retry deployment** sur le dernier commit valide
-3. Ou cliquez sur **Create deployment** et sélectionnez la bonne branche
+2. Cliquez sur **Create deployment**
+3. Sélectionnez la branche : `claude/fix-cloudflare-build-01PrQYVHc9VDeV1DfZay51Mw`
+4. Cliquez sur **Save and Deploy**
 
-### Option B : Via Git Push
+**Option B : Via Dashboard - Retry**
+
+1. Allez dans **Deployments**
+2. Trouvez un déploiement récent (PAS 448c87f)
+3. Cliquez sur **...** > **Retry deployment**
+
+**Option C : Pousser un commit vide**
 
 ```bash
-# Forcer un nouveau déploiement
-git commit --allow-empty -m "Trigger Cloudflare Pages rebuild"
-git push origin claude/audio-network-visualizer-019F6xgvPPLa5nKc1h587Wws
+git commit --allow-empty -m "🔧 Trigger Cloudflare rebuild avec config corrigée"
+git push -u origin claude/fix-cloudflare-build-01PrQYVHc9VDeV1DfZay51Mw
 ```
 
-### Option C : Via Wrangler CLI
+**Option D : Via Wrangler CLI (Avancé)**
 
 ```bash
-# Installer Wrangler
+# Installer Wrangler (si pas déjà fait)
 npm install -g wrangler
 
 # Login
 wrangler login
 
-# Build et déployer
+# Build et déployer directement
 npm run build
 wrangler pages deploy dist --project-name=audio-network-visualizer
 ```
