@@ -67,14 +67,38 @@
             </div>
         </header>
 
-        <!-- Main Layout: 3 columns for desktop, stacked for mobile -->
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <!-- Configuration Status Banner -->
+        <div class="mb-4">
+            <div id="config-status-banner">
+                <!-- Generated dynamically -->
+            </div>
+        </div>
 
-            <!-- COLUMN 1: PARAMETERS (4 of 12 columns) -->
-            <div class="xl:col-span-4 space-y-6">
+        <!-- Packet Journey Timeline - Full Width -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4 transition-colors duration-300">
+            <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                <span class="tooltip">
+                    Packet Journey Timeline
+                    <span class="tooltiptext">
+                        Visual representation of a packet's path through the network.
+                        <br><br>
+                        Shows where latency accumulates along the journey.
+                    </span>
+                </span>
+            </h3>
+            <div id="packet-timeline" class="relative py-4">
+                <!-- Generated dynamically -->
+            </div>
+        </div>
+
+        <!-- Main Layout: 4 columns for desktop, stacked for mobile -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+
+            <!-- COLUMN 1: PARAMETERS (3 of 12 columns) -->
+            <div class="xl:col-span-3 space-y-4">
                 <!-- Protocol -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Network Protocol
                     </h3>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
@@ -107,8 +131,8 @@
                 </div>
 
                 <!-- Audio Parameters -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Audio Source Parameters
                     </h3>
 
@@ -200,7 +224,7 @@
                 </div>
 
                 <!-- Packetization (CRITICAL) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-l-4 border-l-slate-400 dark:border-l-slate-500 border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-l-4 border-l-slate-400 dark:border-l-slate-500 border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">
                             Packetization
@@ -247,8 +271,8 @@
                 </div>
 
                 <!-- Network & Buffers -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Network & Buffers
                     </h3>
 
@@ -378,10 +402,10 @@
             </div>
 
             <!-- COLUMN 2: VISUALIZATION (4 of 12 columns) -->
-            <div class="xl:col-span-4 space-y-6">
+            <div class="xl:col-span-3 space-y-4">
                 <!-- Packet Structure -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Packet Structure
                     </h3>
                     <div class="space-y-2" id="packet-layers">
@@ -402,8 +426,8 @@
                 </div>
 
                 <!-- Audio Payload -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         <span class="tooltip">
                             Audio Payload
                             <span class="tooltiptext">
@@ -422,10 +446,10 @@
             </div>
 
             <!-- COLUMN 3: RESULTS (4 of 12 columns) -->
-            <div class="xl:col-span-4 space-y-6">
+            <div class="xl:col-span-3 space-y-4">
                 <!-- Latency -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Total Latency
                     </h3>
                     <div class="space-y-3">
@@ -493,26 +517,9 @@
                     </div>
                 </div>
 
-                <!-- Packet Journey Timeline -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
-                        <span class="tooltip">
-                            Packet Journey Timeline
-                            <span class="tooltiptext">
-                                Visual representation of a packet's path through the network.
-                                <br><br>
-                                Shows where latency accumulates along the journey.
-                            </span>
-                        </span>
-                    </h3>
-                    <div id="packet-timeline" class="relative py-8">
-                        <!-- Generated dynamically -->
-                    </div>
-                </div>
-
                 <!-- Network Load -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Network Load
                     </h3>
                     <div class="grid grid-cols-2 gap-4 mb-4">
@@ -560,18 +567,8 @@
                     </div>
                 </div>
 
-                <!-- Configuration Status -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
-                        Configuration Status
-                    </h3>
-                    <div id="config-status" class="mb-4">
-                        <!-- Generated dynamically -->
-                    </div>
-                </div>
-
                 <!-- Recommendations -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Recommendations
                     </h3>
@@ -581,8 +578,8 @@
                 </div>
 
                 <!-- Overhead Breakdown -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         <span class="tooltip">
                             Overhead Analysis
                             <span class="tooltiptext">
@@ -596,10 +593,13 @@
                         <!-- Generated dynamically -->
                     </div>
                 </div>
+            </div>
 
+            <!-- COLUMN 4: CAPACITY & LOSS (3 of 12 columns) -->
+            <div class="xl:col-span-3 space-y-4">
                 <!-- Network Capacity -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         <span class="tooltip">
                             Network Capacity @ 1 Gbps
                             <span class="tooltiptext">
@@ -615,8 +615,8 @@
                 </div>
 
                 <!-- Packet Loss Simulator -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
+                    <h3 class="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         <span class="tooltip">
                             Packet Loss Impact
                             <span class="tooltiptext">
