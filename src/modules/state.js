@@ -11,9 +11,11 @@ export const state = {
     sampleRate: 48000,
     bitDepth: 24,
     channels: 8,
-    samplesPerPacket: 128,
+    samplesPerPacket: 48, // AES67 and Dante standard packet time (1ms @ 48kHz)
     hops: 3,
     switchType: 'av-dedicated', // Switch type: 'cut-through', 'store-forward', 'av-dedicated'
+    cableDistance: 100, // Cable distance in meters
+    vlanTagging: false, // 802.1Q VLAN tagging (adds 4 bytes)
     txBuffer: 0,
     jitterBuffer: 0,
     packetLoss: 0 // Percentage (0-5%)
