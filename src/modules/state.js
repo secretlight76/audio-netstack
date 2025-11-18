@@ -14,7 +14,8 @@ export const state = {
     samplesPerPacket: 128,
     hops: 3,
     txBuffer: 0,
-    jitterBuffer: 0
+    jitterBuffer: 0,
+    packetLoss: 0 // Percentage (0-5%)
 };
 
 /**
