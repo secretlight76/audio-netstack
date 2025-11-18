@@ -3,7 +3,7 @@
  * @module calculations
  */
 
-import { state, SIZES } from './state.js';
+import { state, SIZES, SWITCH_LATENCY } from './state.js';
 
 /**
  * Calculates audio payload size in bytes
@@ -64,10 +64,11 @@ export function calculatePacketizationLatency() {
 
 /**
  * Calculates network latency in milliseconds
- * @returns {number} Latency in ms (0.1 ms per switch)
+ * @returns {number} Latency in ms based on switch type and hop count
  */
 export function calculateNetworkLatency() {
-    return state.hops * 0.1;
+    const latencyPerHop = SWITCH_LATENCY[state.switchType] || SWITCH_LATENCY['av-dedicated'];
+    return state.hops * latencyPerHop;
 }
 
 /**

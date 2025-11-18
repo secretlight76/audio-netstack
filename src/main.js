@@ -151,6 +151,22 @@ function initializeEventListeners() {
         updateSamples(e.target.value);
     });
 
+    // Switch Type
+    const switchTypeSelect = document.getElementById('switch-type');
+    const switchExplanation = document.getElementById('switch-explanation');
+
+    const switchExplanations = {
+        'cut-through': 'Fastest switching mode. Forwards packets immediately after reading the destination MAC address. Minimal latency (~5 µs) but no error checking during forwarding.',
+        'av-dedicated': 'Optimized for audio/video networks. Dante and AES67 certified switches provide balanced latency and reliability (~10 µs per hop).',
+        'store-forward': 'Most reliable mode. Receives the entire frame, validates FCS checksum, then forwards. Higher latency (~30 µs) but guarantees error-free transmission.'
+    };
+
+    switchTypeSelect.addEventListener('change', (e) => {
+        state.switchType = e.target.value;
+        switchExplanation.textContent = switchExplanations[state.switchType];
+        calculate();
+    });
+
     // Network hops
     document.getElementById('hops').addEventListener('input', (e) => {
         state.hops = parseInt(e.target.value);
