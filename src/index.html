@@ -275,7 +275,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                TX Buffer: <span id="tx-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">1.0 ms</span>
+                                TX Buffer: <span id="tx-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">0.0 ms</span>
                                 <span class="tooltiptext">
                                     Delay before network transmission.
                                     <br><br>
@@ -283,7 +283,7 @@
                                 </span>
                             </span>
                         </label>
-                        <input type="range" id="tx-buffer" min="0" max="10" step="0.5" value="1" class="w-full">
+                        <input type="range" id="tx-buffer" min="0" max="10" step="0.5" value="0" class="w-full">
                         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                             <span>0 ms</span>
                             <span>10 ms</span>
@@ -294,19 +294,21 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Jitter Buffer: <span id="jitter-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">5 ms</span>
+                                Jitter Buffer: <span id="jitter-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">0 ms</span>
                                 <span class="tooltiptext">
                                     Compensates for network delay variations (jitter).
                                     <br><br>
+                                    • 0 ms: No buffer (ideal network only)
+                                    <br>
                                     • Optimized network: 2-5 ms
                                     <br>
                                     • Standard network: 10-20 ms
                                 </span>
                             </span>
                         </label>
-                        <input type="range" id="jitter-buffer" min="1" max="50" value="5" class="w-full">
+                        <input type="range" id="jitter-buffer" min="0" max="50" value="0" class="w-full">
                         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            <span>1 ms</span>
+                            <span>0 ms</span>
                             <span>50 ms</span>
                         </div>
                     </div>

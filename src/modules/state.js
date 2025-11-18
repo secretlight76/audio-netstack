@@ -13,8 +13,8 @@ export const state = {
     channels: 8,
     samplesPerPacket: 128,
     hops: 3,
-    txBuffer: 1,
-    jitterBuffer: 5
+    txBuffer: 0,
+    jitterBuffer: 0
 };
 
 /**
