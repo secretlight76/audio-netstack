@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualisateur de Stacks Réseau Audio : Dante & AES67</title>
-    <meta name="description" content="Outil pédagogique professionnel pour comprendre la paquetisation audio sur réseau IP avec les protocoles Dante et AES67">
+    <title>Audio Network Stack Analyzer: Dante & AES67</title>
+    <meta name="description" content="Professional educational tool for understanding IP audio packetization with Dante and AES67 protocols">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Configuration Tailwind pour supporter dark mode
+        // Tailwind configuration for dark mode support
         tailwind.config = {
             darkMode: 'class'
         }
@@ -16,7 +16,7 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-950 min-h-screen transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-4 py-6">
-        <!-- En-tête avec Dark Mode Toggle et Support -->
+        <!-- Header with Dark Mode Toggle and Support -->
         <header class="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6 mb-6 transition-all duration-300 border border-gray-200 dark:border-gray-800">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div class="flex-1">
@@ -61,18 +61,18 @@
                             <path d="M657.022 435.307C624.814 435.307 598.66 461.462 598.66 493.669C598.66 525.876 624.814 552.031 657.022 552.031C689.229 552.031 715.384 525.876 715.384 493.669C715.384 461.462 689.229 435.307 657.022 435.307V435.307Z"/>
                             <path d="M735.129 605.025C735.129 605.025 0 605.025 0 1279L884 1279L884 605.025H735.129Z"/>
                         </svg>
-                        <span class="text-base">Offrir un café</span>
+                        <span class="text-base">Buy Me a Coffee</span>
                     </a>
                 </div>
             </div>
         </header>
 
-        <!-- Layout Principal en 3 colonnes pour desktop, empilé pour mobile -->
+        <!-- Main Layout: 3 columns for desktop, stacked for mobile -->
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
 
-            <!-- COLONNE 1 : PARAMÈTRES (4 colonnes sur 12) -->
+            <!-- COLUMN 1: PARAMETERS (4 of 12 columns) -->
             <div class="xl:col-span-4 space-y-6">
-                <!-- Protocole -->
+                <!-- Protocol -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Network Protocol
@@ -81,9 +81,9 @@
                         <span class="tooltip">
                             Transport
                             <span class="tooltiptext">
-                                <strong>AES67</strong> : Standard ouvert utilisant RTP (Real-time Transport Protocol) sur UDP.
+                                <strong>AES67</strong>: Open standard using RTP (Real-time Transport Protocol) over UDP.
                                 <br><br>
-                                <strong>Dante</strong> : Protocole propriétaire d'Audinate, basé sur UDP sans RTP.
+                                <strong>Dante</strong>: Proprietary Audinate protocol, based on UDP without RTP.
                             </span>
                         </span>
                     </label>
@@ -102,29 +102,29 @@
                         </label>
                     </div>
                     <div class="mt-3 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        Port : <span id="port-display" class="font-mono font-semibold text-blue-600 dark:text-blue-400">RTP 5004</span>
+                        Port: <span id="port-display" class="font-mono font-semibold text-blue-600 dark:text-blue-400">RTP 5004</span>
                     </div>
                 </div>
 
-                <!-- Paramètres Audio -->
+                <!-- Audio Parameters -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Audio Source Parameters
                     </h3>
 
-                    <!-- Taux d'échantillonnage -->
+                    <!-- Sample Rate -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Taux d'échantillonnage
+                                Sample Rate
                                 <span class="tooltiptext">
-                                    Nombre d'échantillons capturés par seconde.
+                                    Number of samples captured per second.
                                     <br><br>
-                                    • 44.1 kHz : Standard CD audio
+                                    • 44.1 kHz: CD audio standard
                                     <br>
-                                    • 48 kHz : Standard vidéo et broadcast
+                                    • 48 kHz: Video and broadcast standard
                                     <br>
-                                    • 96 kHz : Audio haute résolution
+                                    • 96 kHz: High-resolution audio
                                 </span>
                             </span>
                         </label>
@@ -135,19 +135,19 @@
                         </select>
                     </div>
 
-                    <!-- Profondeur de bits -->
+                    <!-- Bit Depth -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Profondeur de bits
+                                Bit Depth
                                 <span class="tooltiptext">
-                                    Nombre de bits par échantillon.
+                                    Number of bits per sample.
                                     <br><br>
-                                    • 16 bits : Standard CD (96 dB de dynamique)
+                                    • 16 bits: CD standard (96 dB dynamic range)
                                     <br>
-                                    • 24 bits : Standard professionnel (144 dB)
+                                    • 24 bits: Professional standard (144 dB)
                                     <br>
-                                    • 32 bits : Float, traitement numérique
+                                    • 32 bits: Float, digital processing
                                 </span>
                             </span>
                         </label>
@@ -158,19 +158,19 @@
                         </select>
                     </div>
 
-                    <!-- Nombre de canaux -->
+                    <!-- Channel Count -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Nombre de canaux : <span id="channels-value" class="font-bold text-green-600 dark:text-green-400 text-lg">8</span>
+                                Channel Count: <span id="channels-value" class="font-bold text-blue-600 dark:text-blue-400 text-lg">8</span>
                                 <span class="tooltiptext">
-                                    Nombre de flux audio dans un paquet.
+                                    Number of audio streams in a packet.
                                     <br><br>
-                                    • 2 : Stéréo
+                                    • 2: Stereo
                                     <br>
-                                    • 8 : Scène multi-micro
+                                    • 8: Multi-mic stage
                                     <br>
-                                    • 64 : Console numérique
+                                    • 64: Digital console
                                 </span>
                             </span>
                         </label>
@@ -182,7 +182,7 @@
                     </div>
                 </div>
 
-                <!-- Paquetisation (CRITIQUE) -->
+                <!-- Packetization (CRITICAL) -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-l-4 border-l-blue-500 dark:border-l-blue-400 border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">
@@ -194,22 +194,22 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                             <span class="tooltip">
-                                Échantillons par paquet
+                                Samples per Packet
                                 <span class="tooltiptext">
-                                    <strong>LE PARAMÈTRE CLÉ !</strong>
+                                    <strong>KEY PARAMETER!</strong>
                                     <br><br>
-                                    Nombre d'échantillons par canal dans un paquet.
+                                    Number of samples per channel in a packet.
                                     <br><br>
-                                    • 6-64 : Latence ultra-faible, beaucoup de paquets
+                                    • 6-64: Ultra-low latency, many packets
                                     <br>
-                                    • 128-256 : Bon compromis
+                                    • 128-256: Balanced trade-off
                                     <br>
-                                    • 512-1024 : Moins de paquets, latence élevée
+                                    • 512-1024: Fewer packets, high latency
                                 </span>
                             </span>
                         </label>
 
-                        <!-- Input numérique pour saisie directe -->
+                        <!-- Numeric input for direct entry -->
                         <div class="mb-3">
                             <input type="number" id="samples-input" min="6" max="1024" value="128" step="1"
                                    class="w-full text-center text-xl font-mono font-semibold border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg p-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all">
@@ -218,7 +218,7 @@
                             </div>
                         </div>
 
-                        <!-- Slider pour ajustement rapide -->
+                        <!-- Slider for quick adjustment -->
                         <input type="range" id="samples-per-packet" min="6" max="1024" value="128" step="1" class="w-full">
                         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                             <span>6</span>
@@ -229,21 +229,21 @@
                     </div>
                 </div>
 
-                <!-- Réseau et Buffers -->
+                <!-- Network & Buffers -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Network & Buffers
                     </h3>
 
-                    <!-- Nombre de sauts -->
+                    <!-- Network Hops -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Switches : <span id="hops-value" class="font-bold text-purple-600 dark:text-purple-400">3</span>
+                                Network Switches: <span id="hops-value" class="font-bold text-blue-600 dark:text-blue-400">3</span>
                                 <span class="tooltiptext">
-                                    Nombre d'équipements réseau traversés.
+                                    Number of network devices traversed.
                                     <br><br>
-                                    ~0.1 ms par switch moderne.
+                                    ~0.1 ms per modern switch.
                                 </span>
                             </span>
                         </label>
@@ -254,15 +254,15 @@
                         </div>
                     </div>
 
-                    <!-- Buffer TX -->
+                    <!-- TX Buffer -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Buffer TX : <span id="tx-buffer-value" class="font-bold text-purple-600 dark:text-purple-400">1.0 ms</span>
+                                TX Buffer: <span id="tx-buffer-value" class="font-bold text-blue-600 dark:text-blue-400">1.0 ms</span>
                                 <span class="tooltiptext">
-                                    Délai avant envoi sur le réseau.
+                                    Delay before network transmission.
                                     <br><br>
-                                    Lisse l'émission et gère les pics CPU.
+                                    Smooths transmission and handles CPU spikes.
                                 </span>
                             </span>
                         </label>
@@ -277,13 +277,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Jitter Buffer : <span id="jitter-buffer-value" class="font-bold text-purple-600 dark:text-purple-400">5 ms</span>
+                                Jitter Buffer: <span id="jitter-buffer-value" class="font-bold text-blue-600 dark:text-blue-400">5 ms</span>
                                 <span class="tooltiptext">
-                                    Compense les variations de délai réseau (gigue).
+                                    Compensates for network delay variations (jitter).
                                     <br><br>
-                                    • Réseau optimisé : 2-5 ms
+                                    • Optimized network: 2-5 ms
                                     <br>
-                                    • Réseau standard : 10-20 ms
+                                    • Standard network: 10-20 ms
                                 </span>
                             </span>
                         </label>
@@ -296,15 +296,15 @@
                 </div>
             </div>
 
-            <!-- COLONNE 2 : VISUALISATION (4 colonnes sur 12) -->
+            <!-- COLUMN 2: VISUALIZATION (4 of 12 columns) -->
             <div class="xl:col-span-4 space-y-6">
-                <!-- Paquet Éclaté -->
+                <!-- Packet Structure -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Packet Structure
                     </h3>
                     <div class="space-y-2" id="packet-layers">
-                        <!-- Généré dynamiquement -->
+                        <!-- Generated dynamically -->
                     </div>
                     <div id="mtu-warning" class="mt-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-600 dark:border-red-500 p-4 rounded hidden">
                         <div class="flex items-start gap-3">
@@ -320,43 +320,43 @@
                     </div>
                 </div>
 
-                <!-- Payload Audio -->
+                <!-- Audio Payload -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         <span class="tooltip">
                             Audio Payload
                             <span class="tooltiptext">
-                                Données utiles réelles.
+                                Actual useful data.
                                 <br><br>
-                                Le reste est de l'overhead réseau.
+                                The rest is network overhead.
                             </span>
                         </span>
                     </h3>
                     <div id="payload-info" class="mb-4 text-gray-700 dark:text-gray-300"></div>
                     <div id="payload-visualization" class="bg-white dark:bg-gray-700 p-4 rounded-lg overflow-auto max-h-64 transition-colors">
-                        <!-- Généré dynamiquement -->
+                        <!-- Generated dynamically -->
                     </div>
                     <div id="efficiency-info" class="mt-4 text-sm text-gray-600 dark:text-gray-400"></div>
                 </div>
             </div>
 
-            <!-- COLONNE 3 : RÉSULTATS (4 colonnes sur 12) -->
+            <!-- COLUMN 3: RESULTS (4 of 12 columns) -->
             <div class="xl:col-span-4 space-y-6">
-                <!-- Latence -->
+                <!-- Latency -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Total Latency
                     </h3>
                     <div class="space-y-3">
-                        <!-- Paquetisation -->
+                        <!-- Packetization -->
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400 tooltip">
-                                    Paquetisation
+                                    Packetization
                                     <span class="tooltiptext">
-                                        Temps pour remplir un paquet.
+                                        Time to fill a packet.
                                         <br><br>
-                                        Formule : (Échantillons / Taux) × 1000
+                                        Formula: (Samples / Rate) × 1000
                                     </span>
                                 </span>
                                 <span id="latency-packetization" class="text-sm font-bold text-yellow-600 dark:text-yellow-400"></span>
@@ -377,10 +377,10 @@
                             </div>
                         </div>
 
-                        <!-- Réseau -->
+                        <!-- Network -->
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Réseau</span>
+                                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Network</span>
                                 <span id="latency-network" class="text-sm font-bold text-green-600 dark:text-green-400"></span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
@@ -412,7 +412,7 @@
                     </div>
                 </div>
 
-                <!-- Charge Réseau -->
+                <!-- Network Load -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
                         Network Load
@@ -420,41 +420,41 @@
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors">
                             <div class="text-xs text-gray-600 dark:text-gray-400 mb-1 tooltip">
-                                Paquets/s
+                                Packets/s
                                 <span class="tooltiptext">
-                                    Formule : Taux / Échantillons
+                                    Formula: Rate / Samples
                                 </span>
                             </div>
                             <div id="pps" class="text-2xl font-bold text-purple-600 dark:text-purple-400"></div>
                         </div>
                         <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors">
                             <div class="text-xs text-gray-600 dark:text-gray-400 mb-1 tooltip">
-                                Bande Pass.
+                                Bandwidth
                                 <span class="tooltiptext">
-                                    Débit total en Mbps
+                                    Total throughput in Mbps
                                 </span>
                             </div>
                             <div id="bandwidth" class="text-2xl font-bold text-pink-600 dark:text-pink-400"></div>
                         </div>
                     </div>
                     <div id="network-analysis" class="p-4 bg-white dark:bg-gray-700 rounded-lg text-xs text-gray-700 dark:text-gray-300 leading-relaxed transition-colors">
-                        <!-- Analyse dynamique -->
+                        <!-- Dynamic analysis -->
                     </div>
                 </div>
 
-                <!-- Recommandations -->
+                <!-- Recommendations -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
                         Recommendations
                     </h3>
                     <div id="recommendations" class="text-xs text-gray-700 dark:text-gray-300 space-y-2">
-                        <!-- Généré dynamiquement -->
+                        <!-- Generated dynamically -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section Pédagogique en Bas -->
+        <!-- Educational Section at Bottom -->
         <footer class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 transition-colors duration-300">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 uppercase tracking-wide">
                 Technical Documentation
@@ -467,8 +467,8 @@
                         Packetization Process
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        L'audio numérique est découpé en <strong>paquets</strong> pour être transporté sur un réseau IP.
-                        Chaque paquet contient un nombre fixe d'échantillons audio plus des en-têtes réseau (Ethernet, IP, UDP, RTP).
+                        Digital audio is divided into <strong>packets</strong> for IP network transport.
+                        Each packet contains a fixed number of audio samples plus network headers (Ethernet, IP, UDP, RTP).
                     </p>
                 </div>
 
@@ -478,8 +478,8 @@
                         Latency Components
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        La latence provient du <strong>temps nécessaire pour remplir un paquet</strong> (paquetisation),
-                        des buffers de stabilisation, et du transit réseau. Plus le paquet est gros, plus la latence augmente.
+                        Latency comes from the <strong>time required to fill a packet</strong> (packetization),
+                        stabilization buffers, and network transit. Larger packets increase latency.
                     </p>
                 </div>
 
@@ -489,8 +489,8 @@
                         Performance Trade-offs
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <strong>Peu d'échantillons par paquet</strong> = faible latence mais beaucoup de paquets (charge réseau).
-                        <strong>Beaucoup d'échantillons</strong> = moins de paquets mais latence élevée.
+                        <strong>Few samples per packet</strong> = low latency but many packets (network load).
+                        <strong>Many samples</strong> = fewer packets but high latency.
                     </p>
                 </div>
 
@@ -500,8 +500,8 @@
                         Protocol Comparison
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        <strong>AES67</strong> est un standard ouvert qui utilise RTP (12 octets d'en-tête supplémentaires).
-                        <strong>Dante</strong> est propriétaire, basé sur UDP directement, légèrement plus efficace.
+                        <strong>AES67</strong> is an open standard using RTP (12 additional header bytes).
+                        <strong>Dante</strong> is proprietary, based directly on UDP, slightly more efficient.
                     </p>
                 </div>
 
@@ -511,8 +511,8 @@
                         Bandwidth Calculation
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        La bande passante = <strong>Taille totale du paquet × Nombre de paquets/seconde</strong>.
-                        Elle inclut tous les en-têtes réseau (overhead). Un flux 8 canaux @ 48kHz utilise typiquement 5-10 Mbps.
+                        Bandwidth = <strong>Total packet size × Packets per second</strong>.
+                        Includes all network headers (overhead). An 8-channel stream @ 48kHz typically uses 5-10 Mbps.
                     </p>
                 </div>
 
@@ -522,8 +522,8 @@
                         Jitter Buffer Function
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                        Buffer de réception qui <strong>compense les variations</strong> de délai réseau (gigue).
-                        Trop faible = dropouts. Trop élevé = latence inutile. 2-5 ms suffisent sur un réseau optimisé.
+                        Reception buffer that <strong>compensates for variations</strong> in network delay (jitter).
+                        Too low = dropouts. Too high = unnecessary latency. 2-5 ms sufficient on optimized networks.
                     </p>
                 </div>
             </div>

@@ -163,12 +163,12 @@ function initializeEventListeners() {
  * Initialisation de l'application au chargement du DOM
  */
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎵 Visualisateur Audio Réseau - Initialisation');
+    console.log('[INIT] Audio Network Stack Analyzer - Starting');
 
     initializeDarkMode();
     initializeEventListeners();
     updatePortInfo();
     calculate();
 
-    console.log('✅ Application prête');
+    console.log('[READY] Application initialized');
 });
