@@ -467,11 +467,11 @@ export function updatePacketLossImpact(packetsPerSecond, packetizationLatency) {
 }
 
 /**
- * Updates configuration status with smart visual indicators
+ * Updates configuration status banner with smart visual indicators
  * @param {Object} results - Calculation results
  */
 export function updateConfigStatus(results) {
-    const container = document.getElementById('config-status');
+    const container = document.getElementById('config-status-banner');
     const { totalLatency, bandwidth, mtuExceeded } = results;
 
     const issues = [];
@@ -525,34 +525,26 @@ export function updateConfigStatus(results) {
         statusColor = 'yellow';
     }
 
+    let issuesText = '';
+    if (issues.length > 0) {
+        issuesText = ' • ' + issues.map(i => i.text).join(' • ');
+    }
+
     let html = `
-        <div class="flex items-center gap-3 p-4 rounded-lg bg-${statusColor}-50 dark:bg-${statusColor}-900/20 border-2 border-${statusColor}-400 dark:border-${statusColor}-600">
-            <div class="text-4xl">${statusIcon}</div>
-            <div class="flex-1">
-                <div class="font-bold text-lg text-${statusColor}-800 dark:text-${statusColor}-400">${statusText}</div>
-                <div class="text-sm text-${statusColor}-700 dark:text-${statusColor}-500">
-                    ${status === 'optimal' ? 'Configuration meets professional AoIP standards' :
-                      status === 'acceptable' ? 'Configuration functional but can be improved' :
-                      'Configuration may cause audio issues'}
+        <div class="flex items-center justify-between gap-4 px-4 py-2 rounded-lg bg-${statusColor}-50 dark:bg-${statusColor}-900/20 border border-${statusColor}-300 dark:border-${statusColor}-700">
+            <div class="flex items-center gap-3">
+                <div class="text-2xl">${statusIcon}</div>
+                <div>
+                    <span class="font-bold text-sm text-${statusColor}-800 dark:text-${statusColor}-400">${statusText}</span>
+                    <span class="text-xs text-${statusColor}-700 dark:text-${statusColor}-500 ml-2">
+                        ${status === 'optimal' ? 'Professional AoIP standards' :
+                          status === 'acceptable' ? 'Functional but can be improved' :
+                          'May cause audio issues'}${issuesText}
+                    </span>
                 </div>
             </div>
         </div>
     `;
-
-    // Show issues if any
-    if (issues.length > 0) {
-        html += '<div class="mt-3 space-y-2">';
-        issues.forEach(issue => {
-            const icon = issue.severity === 'high' ? '⚠️' : '⚡';
-            html += `
-                <div class="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300">
-                    <span>${icon}</span>
-                    <span>${issue.text}</span>
-                </div>
-            `;
-        });
-        html += '</div>';
-    }
 
     container.innerHTML = html;
 }
