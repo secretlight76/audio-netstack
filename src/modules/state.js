@@ -11,7 +11,7 @@ export const state = {
     sampleRate: 48000,
     bitDepth: 24,
     channels: 8,
-    samplesPerPacket: 128,
+    samplesPerPacket: 48, // AES67 and Dante standard packet time (1ms @ 48kHz)
     hops: 3,
     switchType: 'av-dedicated', // Switch type: 'cut-through', 'store-forward', 'av-dedicated'
     txBuffer: 0,

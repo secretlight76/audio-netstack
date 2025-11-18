@@ -129,7 +129,7 @@ function initializeEventListeners() {
 
     // Update samples function
     function updateSamples(value) {
-        const samples = Math.max(6, Math.min(1024, parseInt(value)));
+        const samples = Math.max(1, Math.min(1024, parseInt(value)));
         state.samplesPerPacket = samples;
         samplesSlider.value = samples;
         samplesInput.value = samples;
@@ -146,7 +146,7 @@ function initializeEventListeners() {
 
     // Validation on blur to correct out-of-range values
     samplesInput.addEventListener('blur', (e) => {
-        if (e.target.value < 6) e.target.value = 6;
+        if (e.target.value < 1) e.target.value = 1;
         if (e.target.value > 1024) e.target.value = 1024;
         updateSamples(e.target.value);
     });
