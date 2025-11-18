@@ -18,13 +18,13 @@ function calculate() {
 }
 
 /**
- * Met à jour les recommandations dynamiques
+ * Updates dynamic recommendations
  */
 function updateRecommendations(results) {
     const container = document.getElementById('recommendations');
     const recommendations = [];
 
-    // Recommandation sur la paquetisation
+    // Packetization recommendation
     if (state.samplesPerPacket < 64) {
         recommendations.push('[OK] <strong>Ultra-low latency</strong> with ' + state.samplesPerPacket + ' samples. Optimal for live monitoring.');
     } else if (state.samplesPerPacket > 512) {
@@ -33,12 +33,12 @@ function updateRecommendations(results) {
         recommendations.push('[OK] Balanced latency/efficiency trade-off with ' + state.samplesPerPacket + ' samples.');
     }
 
-    // Recommandation sur le jitter buffer
+    // Jitter buffer recommendation
     if (state.jitterBuffer > 20) {
         recommendations.push('[INFO] High jitter buffer (' + state.jitterBuffer + ' ms). Consider reducing if network is stable.');
     }
 
-    // Recommandation sur la bande passante
+    // Bandwidth recommendation
     const percentBandwidth = (results.bandwidth / 1000) * 100;
     if (percentBandwidth > 1) {
         recommendations.push('[WARN] Using ' + percentBandwidth.toFixed(1) + '% of Gigabit capacity. Monitor when multiplexing streams.');
@@ -46,7 +46,7 @@ function updateRecommendations(results) {
         recommendations.push('[OK] Optimal bandwidth (' + results.bandwidth.toFixed(2) + ' Mbps). Multiple streams feasible.');
     }
 
-    // Recommandation MTU
+    // MTU recommendation
     if (results.mtuExceeded) {
         recommendations.push('[ERROR] <strong>Packet oversized!</strong> Fragmentation risk. Reduce channels or samples.');
     }
@@ -55,13 +55,13 @@ function updateRecommendations(results) {
 }
 
 /**
- * Initialise le Dark Mode
+ * Initializes Dark Mode
  */
 function initializeDarkMode() {
     const themeToggle = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement;
 
-    // Vérifier la préférence sauvegardée ou la préférence système
+    // Check saved preference or system preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -69,7 +69,7 @@ function initializeDarkMode() {
         htmlElement.classList.add('dark');
     }
 
-    // Toggle au clic
+    // Toggle on click
     themeToggle.addEventListener('click', () => {
         htmlElement.classList.toggle('dark');
         const isDark = htmlElement.classList.contains('dark');
@@ -78,10 +78,10 @@ function initializeDarkMode() {
 }
 
 /**
- * Initialise les écouteurs d'événements sur tous les contrôles
+ * Initializes event listeners on all controls
  */
 function initializeEventListeners() {
-    // Protocole
+    // Protocol
     document.querySelectorAll('input[name="protocol"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             state.protocol = e.target.value;
@@ -90,30 +90,30 @@ function initializeEventListeners() {
         });
     });
 
-    // Taux d'échantillonnage
+    // Sample rate
     document.getElementById('sample-rate').addEventListener('change', (e) => {
         state.sampleRate = parseInt(e.target.value);
         calculate();
     });
 
-    // Profondeur de bits
+    // Bit depth
     document.getElementById('bit-depth').addEventListener('change', (e) => {
         state.bitDepth = parseInt(e.target.value);
         calculate();
     });
 
-    // Nombre de canaux
+    // Channel count
     document.getElementById('channels').addEventListener('input', (e) => {
         state.channels = parseInt(e.target.value);
         document.getElementById('channels-value').textContent = state.channels;
         calculate();
     });
 
-    // Échantillons par paquet - Synchronisation slider et input
+    // Samples per packet - Slider and input synchronization
     const samplesSlider = document.getElementById('samples-per-packet');
     const samplesInput = document.getElementById('samples-input');
 
-    // Fonction de mise à jour des échantillons
+    // Update samples function
     function updateSamples(value) {
         const samples = Math.max(6, Math.min(1024, parseInt(value)));
         state.samplesPerPacket = samples;
@@ -130,21 +130,21 @@ function initializeEventListeners() {
         updateSamples(e.target.value);
     });
 
-    // Validation sur blur pour corriger les valeurs hors limites
+    // Validation on blur to correct out-of-range values
     samplesInput.addEventListener('blur', (e) => {
         if (e.target.value < 6) e.target.value = 6;
         if (e.target.value > 1024) e.target.value = 1024;
         updateSamples(e.target.value);
     });
 
-    // Nombre de sauts
+    // Network hops
     document.getElementById('hops').addEventListener('input', (e) => {
         state.hops = parseInt(e.target.value);
         document.getElementById('hops-value').textContent = state.hops;
         calculate();
     });
 
-    // Buffer d'émission
+    // TX Buffer
     document.getElementById('tx-buffer').addEventListener('input', (e) => {
         state.txBuffer = parseFloat(e.target.value);
         document.getElementById('tx-buffer-value').textContent = state.txBuffer.toFixed(1) + ' ms';
@@ -160,7 +160,7 @@ function initializeEventListeners() {
 }
 
 /**
- * Initialisation de l'application au chargement du DOM
+ * Application initialization on DOM load
  */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[INIT] Audio Network Stack Analyzer - Starting');

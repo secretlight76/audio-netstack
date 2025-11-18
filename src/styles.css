@@ -71,7 +71,7 @@ input[type="range"]::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #64748b;
     cursor: pointer;
     transition: all 0.2s;
     border: 2px solid white;
@@ -79,7 +79,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-    background: #1d4ed8;
+    background: #475569;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -87,7 +87,7 @@ input[type="range"]::-moz-range-thumb {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #64748b;
     cursor: pointer;
     border: 2px solid white;
     transition: all 0.2s;
@@ -95,7 +95,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-moz-range-thumb:hover {
-    background: #1d4ed8;
+    background: #475569;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -130,15 +130,17 @@ input[type="number"]::-webkit-outer-spin-button {
 .sample-dot {
     width: 8px;
     height: 8px;
-    background: #3b82f6;
+    background: #8b5cf6;
+    opacity: 0.6;
     border-radius: 2px;
     display: inline-block;
     margin: 1px;
-    transition: background 0.3s;
+    transition: background 0.3s, opacity 0.3s;
 }
 
 .dark .sample-dot {
-    background: #60a5fa;
+    background: #a78bfa;
+    opacity: 0.5;
 }
 
 /* Style pour les couches de paquets */
@@ -203,12 +205,12 @@ html {
 input:focus,
 select:focus,
 button:focus {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #94a3b8;
     outline-offset: 2px;
 }
 
 .dark input:focus,
 .dark select:focus,
 .dark button:focus {
-    outline-color: #60a5fa;
+    outline-color: #64748b;
 }
