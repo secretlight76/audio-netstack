@@ -1,0 +1,41 @@
+# En-têtes pour tous les fichiers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+# Cache pour les assets statiques (1 an)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache pour les fichiers JS et CSS (1 an)
+*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+
+*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+
+# Pas de cache pour index.html
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=utf-8
+
+# Support de la compression
+*.js.gz
+  Content-Encoding: gzip
+  Content-Type: application/javascript
+
+*.css.gz
+  Content-Encoding: gzip
+  Content-Type: text/css
+
+*.js.br
+  Content-Encoding: br
+  Content-Type: application/javascript
+
+*.css.br
+  Content-Encoding: br
+  Content-Type: text/css

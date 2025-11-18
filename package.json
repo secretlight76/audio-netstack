@@ -1,0 +1,30 @@
+{
+  "name": "audio-network-visualizer",
+  "version": "1.0.0",
+  "description": "Visualisateur pédagogique de stacks réseau audio Dante & AES67",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler pages deploy dist"
+  },
+  "keywords": [
+    "audio",
+    "networking",
+    "dante",
+    "aes67",
+    "visualization",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "terser": "^5.36.0",
+    "vite-plugin-compression": "^0.5.1"
+  }
+}
