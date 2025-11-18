@@ -146,6 +146,26 @@ export function updatePayloadVisualization(payloadSize) {
 }
 
 /**
+ * Formats latency value with adaptive units (ns, µs, or ms)
+ * @param {number} valueInMs - Value in milliseconds
+ * @returns {string} Formatted string with appropriate unit
+ */
+function formatLatency(valueInMs) {
+    if (valueInMs >= 1) {
+        // >= 1 ms: display in milliseconds
+        return `${valueInMs.toFixed(2)} ms`;
+    } else if (valueInMs >= 0.001) {
+        // >= 1 µs: display in microseconds
+        const valueInUs = valueInMs * 1000;
+        return `${valueInUs.toFixed(2)} µs`;
+    } else {
+        // < 1 µs: display in nanoseconds
+        const valueInNs = valueInMs * 1000000;
+        return `${valueInNs.toFixed(0)} ns`;
+    }
+}
+
+/**
  * Updates a latency bar
  * @param {string} type - Latency type
  * @param {number} value - Value in ms
@@ -159,12 +179,7 @@ function updateLatencyBar(type, value, total, maxWidth) {
     const width = (value / total) * maxWidth;
     bar.style.width = `${width}%`;
 
-    // Display in microseconds if less than 1ms, otherwise in milliseconds
-    if (type === 'total' && value < 1) {
-        text.textContent = `${(value * 1000).toFixed(0)} µs`;
-    } else {
-        text.textContent = `${value.toFixed(2)} ms`;
-    }
+    text.textContent = formatLatency(value);
 }
 
 /**
