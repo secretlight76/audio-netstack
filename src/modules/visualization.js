@@ -1,13 +1,13 @@
 /**
- * Visualization Module - Gestion de l'affichage et des mises à jour UI
+ * Visualization Module - UI display and update management
  * @module visualization
  */
 
 import { state, SIZES } from './state.js';
 
 /**
- * Met à jour la visualisation du paquet éclaté
- * @param {Object} results - Résultats des calculs
+ * Updates packet layer visualization
+ * @param {Object} results - Calculation results
  */
 export function updatePacketVisualization(results) {
     const container = document.getElementById('packet-layers');
@@ -103,8 +103,8 @@ export function updatePacketVisualization(results) {
 }
 
 /**
- * Met à jour la visualisation de la payload audio
- * @param {number} payloadSize - Taille de la payload
+ * Updates audio payload visualization
+ * @param {number} payloadSize - Payload size
  */
 export function updatePayloadVisualization(payloadSize) {
     const container = document.getElementById('payload-visualization');
@@ -146,11 +146,11 @@ export function updatePayloadVisualization(payloadSize) {
 }
 
 /**
- * Met à jour une barre de latence
- * @param {string} type - Type de latence
- * @param {number} value - Valeur en ms
- * @param {number} total - Latence totale
- * @param {number} maxWidth - Largeur maximale en pourcentage
+ * Updates a latency bar
+ * @param {string} type - Latency type
+ * @param {number} value - Value in ms
+ * @param {number} total - Total latency
+ * @param {number} maxWidth - Maximum width in percentage
  */
 function updateLatencyBar(type, value, total, maxWidth) {
     const bar = document.getElementById(`latency-${type}-bar`);
@@ -162,8 +162,8 @@ function updateLatencyBar(type, value, total, maxWidth) {
 }
 
 /**
- * Met à jour la visualisation de la latence
- * @param {Object} results - Résultats des calculs
+ * Updates latency visualization
+ * @param {Object} results - Calculation results
  */
 export function updateLatencyVisualization(results) {
     const { packetizationLatency, networkLatency, totalLatency } = results;

@@ -122,16 +122,25 @@
                                     <br><br>
                                     • 44.1 kHz: CD audio standard
                                     <br>
-                                    • 48 kHz: Video and broadcast standard
+                                    • 48 kHz: Video/broadcast (AES67 pivot)
+                                    <br>
+                                    • 88.2 kHz: Double rate (2× 44.1)
                                     <br>
                                     • 96 kHz: High-resolution audio
+                                    <br>
+                                    • 176.4 kHz: Quad rate (4× 44.1)
+                                    <br>
+                                    • 192 kHz: Ultra high-resolution
                                 </span>
                             </span>
                         </label>
                         <select id="sample-rate" class="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-2.5 focus:border-slate-400 focus:outline-none transition-colors">
                             <option value="44100">44.1 kHz</option>
                             <option value="48000" selected>48 kHz</option>
+                            <option value="88200">88.2 kHz</option>
                             <option value="96000">96 kHz</option>
+                            <option value="176400">176.4 kHz</option>
+                            <option value="192000">192 kHz</option>
                         </select>
                     </div>
 
@@ -171,6 +180,14 @@
                                     • 8: Multi-mic stage
                                     <br>
                                     • 64: Digital console
+                                    <br><br>
+                                    <strong>Dante limits per Gigabit:</strong>
+                                    <br>
+                                    • 512 ch @ 44.1/48 kHz
+                                    <br>
+                                    • 256 ch @ 88.2/96 kHz
+                                    <br>
+                                    • 128 ch @ 176.4/192 kHz
                                 </span>
                             </span>
                         </label>
@@ -517,13 +534,35 @@
                 </div>
 
                 <!-- Concept 6 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Jitter Buffer Function
                     </h3>
                     <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                         Reception buffer that <strong>compensates for variations</strong> in network delay (jitter).
                         Too low = dropouts. Too high = unnecessary latency. 2-5 ms sufficient on optimized networks.
+                    </p>
+                </div>
+
+                <!-- Concept 7 -->
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
+                    <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
+                        AES67 Packet Time
+                    </h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        AES67 defines packet times: <strong>125µs, 250µs, 1ms (mandatory), 4ms</strong>.
+                        At 48kHz: 1ms = 48 samples. This tool uses sample count for flexibility across both protocols.
+                    </p>
+                </div>
+
+                <!-- Concept 8 -->
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
+                    <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
+                        Transport Modes
+                    </h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong>Unicast</strong> (1-to-1): Lower switch load, point-to-point delivery.
+                        <strong>Multicast</strong> (1-to-many): Efficient for multiple receivers. AES67 primarily uses multicast.
                     </p>
                 </div>
             </div>

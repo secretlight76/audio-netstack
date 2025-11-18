@@ -51,6 +51,20 @@ function updateRecommendations(results) {
         recommendations.push('[ERROR] <strong>Packet oversized!</strong> Fragmentation risk. Reduce channels or samples.');
     }
 
+    // Dante channel limit recommendation based on sample rate
+    if (state.protocol === 'dante') {
+        let maxChannels = 512;
+        if (state.sampleRate >= 176400) {
+            maxChannels = 128;
+        } else if (state.sampleRate >= 88200) {
+            maxChannels = 256;
+        }
+
+        if (state.channels > maxChannels) {
+            recommendations.push('[WARN] <strong>Dante limit exceeded:</strong> Max ' + maxChannels + ' channels @ ' + (state.sampleRate/1000) + ' kHz. Current: ' + state.channels + ' channels.');
+        }
+    }
+
     container.innerHTML = recommendations.map(r => `<div class="flex items-start gap-2"><span class="flex-shrink-0">•</span><span>${r}</span></div>`).join('');
 }
 

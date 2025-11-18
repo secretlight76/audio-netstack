@@ -1,22 +1,22 @@
 /**
- * Calculations Module - Tous les calculs de paquets, latence et bande passante
+ * Calculations Module - All packet, latency and bandwidth calculations
  * @module calculations
  */
 
 import { state, SIZES } from './state.js';
 
 /**
- * Calcule la taille de la payload audio en octets
- * @returns {number} Taille en octets
+ * Calculates audio payload size in bytes
+ * @returns {number} Size in bytes
  */
 export function calculatePayloadSize() {
-    // Formule : Canaux × Échantillons × (Bits / 8)
+    // Formula: Channels × Samples × (Bits / 8)
     return state.channels * state.samplesPerPacket * (state.bitDepth / 8);
 }
 
 /**
- * Calcule la taille des en-têtes réseau
- * @returns {number} Taille totale des en-têtes en octets
+ * Calculates network header size
+ * @returns {number} Total header size in bytes
  */
 export function calculateHeaderSize() {
     return SIZES.ethernet + SIZES.ip + SIZES.udp +
@@ -24,9 +24,9 @@ export function calculateHeaderSize() {
 }
 
 /**
- * Calcule la taille totale du paquet (couche 2)
- * @param {number} payloadSize - Taille de la payload
- * @returns {number} Taille totale en octets
+ * Calculates total packet size (layer 2)
+ * @param {number} payloadSize - Payload size
+ * @returns {number} Total size in bytes
  */
 export function calculateTotalPacketSize(payloadSize) {
     return SIZES.ethernet + SIZES.ip + SIZES.udp +
@@ -35,74 +35,74 @@ export function calculateTotalPacketSize(payloadSize) {
 }
 
 /**
- * Calcule l'efficacité du paquet (ratio payload / total)
- * @param {number} payloadSize - Taille de la payload
- * @param {number} totalSize - Taille totale du paquet
- * @returns {number} Pourcentage d'efficacité
+ * Calculates packet efficiency (payload / total ratio)
+ * @param {number} payloadSize - Payload size
+ * @param {number} totalSize - Total packet size
+ * @returns {number} Efficiency percentage
  */
 export function calculateEfficiency(payloadSize, totalSize) {
     return (payloadSize / totalSize) * 100;
 }
 
 /**
- * Vérifie si le paquet dépasse le MTU
- * @param {number} totalSize - Taille totale du paquet
- * @returns {boolean} True si dépasse le MTU
+ * Checks if packet exceeds MTU
+ * @param {number} totalSize - Total packet size
+ * @returns {boolean} True if exceeds MTU
  */
 export function exceedsMTU(totalSize) {
     return totalSize > SIZES.mtu;
 }
 
 /**
- * Calcule la latence de paquetisation en millisecondes
- * @returns {number} Latence en ms
+ * Calculates packetization latency in milliseconds
+ * @returns {number} Latency in ms
  */
 export function calculatePacketizationLatency() {
-    // Formule : (Échantillons par paquet / Taux d'échantillonnage) × 1000
+    // Formula: (Samples per packet / Sample rate) × 1000
     return (state.samplesPerPacket / state.sampleRate) * 1000;
 }
 
 /**
- * Calcule la latence réseau en millisecondes
- * @returns {number} Latence en ms (0.1 ms par switch)
+ * Calculates network latency in milliseconds
+ * @returns {number} Latency in ms (0.1 ms per switch)
  */
 export function calculateNetworkLatency() {
     return state.hops * 0.1;
 }
 
 /**
- * Calcule la latence totale de bout en bout
- * @param {number} packetizationLatency - Latence de paquetisation
- * @param {number} networkLatency - Latence réseau
- * @returns {number} Latence totale en ms
+ * Calculates total end-to-end latency
+ * @param {number} packetizationLatency - Packetization latency
+ * @param {number} networkLatency - Network latency
+ * @returns {number} Total latency in ms
  */
 export function calculateTotalLatency(packetizationLatency, networkLatency) {
     return packetizationLatency + state.txBuffer + networkLatency + state.jitterBuffer;
 }
 
 /**
- * Calcule le nombre de paquets par seconde
- * @returns {number} Paquets par seconde
+ * Calculates packets per second
+ * @returns {number} Packets per second
  */
 export function calculatePacketsPerSecond() {
-    // Formule : Taux d'échantillonnage / Échantillons par paquet
+    // Formula: Sample rate / Samples per packet
     return state.sampleRate / state.samplesPerPacket;
 }
 
 /**
- * Calcule la bande passante en Mbps
- * @param {number} totalPacketSize - Taille totale du paquet
- * @param {number} packetsPerSecond - Paquets par seconde
- * @returns {number} Bande passante en Mbps
+ * Calculates bandwidth in Mbps
+ * @param {number} totalPacketSize - Total packet size
+ * @param {number} packetsPerSecond - Packets per second
+ * @returns {number} Bandwidth in Mbps
  */
 export function calculateBandwidth(totalPacketSize, packetsPerSecond) {
-    // Formule : Taille du paquet (bits) × Paquets par seconde / 1 000 000
+    // Formula: Packet size (bits) × Packets per second / 1,000,000
     return (totalPacketSize * 8 * packetsPerSecond) / 1000000;
 }
 
 /**
- * Effectue tous les calculs et retourne un objet avec les résultats
- * @returns {Object} Tous les résultats calculés
+ * Performs all calculations and returns result object
+ * @returns {Object} All calculated results
  */
 export function performAllCalculations() {
     const payloadSize = calculatePayloadSize();
