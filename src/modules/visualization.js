@@ -179,14 +179,14 @@ export function updateLatencyVisualization(results) {
     let message = '';
 
     if (packetizationLatency > totalLatency * 0.5) {
-        message = `⚠️ La latence de paquetisation (${packetizationLatency.toFixed(2)} ms) représente plus de 50% de la latence totale.
-                  Réduisez le nombre d'échantillons par paquet pour diminuer la latence.`;
+        message = `[NOTICE] Packetization latency (${packetizationLatency.toFixed(2)} ms) exceeds 50% of total latency.
+                  Reduce samples per packet to decrease latency.`;
     } else if (state.jitterBuffer > totalLatency * 0.5) {
-        message = `Le Jitter Buffer (${state.jitterBuffer} ms) représente plus de 50% de la latence totale.
-                  Si votre réseau est stable, vous pouvez le réduire.`;
+        message = `[INFO] Jitter buffer (${state.jitterBuffer} ms) represents >50% of total latency.
+                  Consider reducing if network is stable.`;
     } else {
-        message = `✅ Bonne répartition de la latence. La latence de paquetisation est de ${packetizationLatency.toFixed(2)} ms
-                  pour ${state.samplesPerPacket} échantillons à ${state.sampleRate / 1000} kHz.`;
+        message = `[OK] Balanced latency distribution. Packetization: ${packetizationLatency.toFixed(2)} ms
+                  for ${state.samplesPerPacket} samples @ ${state.sampleRate / 1000} kHz.`;
     }
 
     efficiencyDiv.innerHTML = `<p class="text-sm">${message}</p>`;
@@ -204,32 +204,31 @@ export function updateNetworkLoad(results) {
 
     const analysisDiv = document.getElementById('network-analysis');
     let analysis = `
-        <p class="mb-2">
-            <strong>Analyse :</strong> Avec ces réglages, votre flux audio de
-            <strong>${state.channels} ${state.channels > 1 ? 'canaux' : 'canal'}</strong>
-            utilise <strong>${bandwidth.toFixed(2)} Mbps</strong> de bande passante.
+        <p class="mb-2 text-gray-700 dark:text-gray-300">
+            <strong>Stream Analysis:</strong> ${state.channels} channel${state.channels > 1 ? 's' : ''} using
+            <strong>${bandwidth.toFixed(2)} Mbps</strong> bandwidth.
         </p>
     `;
 
     if (state.samplesPerPacket < 128) {
         analysis += `
-            <p class="text-orange-600 dark:text-orange-400">
-                💡 Paquets petits (${state.samplesPerPacket} échantillons) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
-                Plus de charge CPU mais latence minimale.
+            <p class="text-gray-600 dark:text-gray-400 text-xs">
+                [LOW LATENCY] Small packets (${state.samplesPerPacket} samples) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Higher CPU load, minimum latency.
             </p>
         `;
     } else if (state.samplesPerPacket > 512) {
         analysis += `
-            <p class="text-blue-600 dark:text-blue-400">
-                💡 Gros paquets (${state.samplesPerPacket} échantillons) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
-                Efficace réseau mais latence accrue.
+            <p class="text-gray-600 dark:text-gray-400 text-xs">
+                [HIGH EFFICIENCY] Large packets (${state.samplesPerPacket} samples) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Network efficient, increased latency.
             </p>
         `;
     } else {
         analysis += `
-            <p class="text-green-600 dark:text-green-400">
-                ✅ Équilibré : <strong>${Math.round(packetsPerSecond)} pps</strong>.
-                Bon compromis latence/efficacité.
+            <p class="text-gray-600 dark:text-gray-400 text-xs">
+                [BALANCED] <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Optimal latency/efficiency trade-off.
             </p>
         `;
     }
@@ -238,8 +237,8 @@ export function updateNetworkLoad(results) {
     const percentUsed = (bandwidth / gigabitCapacity) * 100;
 
     analysis += `
-        <p class="mt-2 text-xs">
-            Sur Gigabit : <strong>${percentUsed.toFixed(2)}%</strong> de capacité utilisée.
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-500">
+            Gigabit utilization: <strong>${percentUsed.toFixed(2)}%</strong>
         </p>
     `;
 
