@@ -2,15 +2,9 @@ name = "audio-network-visualizer"
 compatibility_date = "2024-01-01"
 
 # Configuration pour Cloudflare Pages
+# Note: La section [build] n'est PAS supportée pour Pages
+# Utilisez .cloudflare/pages.json ou le Dashboard pour la config build
 pages_build_output_dir = "dist"
-
-[build]
-command = "npm install && npm run build"
-cwd = ""
-
-# Node.js version
-[build.environment]
-NODE_VERSION = "23"
 
 # Variables d'environnement
 [vars]
