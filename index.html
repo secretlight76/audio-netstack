@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisateur de Stacks Réseau Audio : Dante & AES67</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style pour les tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Style pour les sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d1d5db;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Style pour les échantillons audio */
+        .sample-dot {
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 2px;
+            display: inline-block;
+            margin: 1px;
+        }
+
+        /* Style pour les couches de paquets */
+        .packet-layer {
+            transition: all 0.3s ease;
+        }
+
+        .packet-layer:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- En-tête -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">
+                🎵 Visualisateur de Stacks Réseau Audio
+            </h1>
+            <h2 class="text-xl text-gray-600 mb-2">Dante & AES67</h2>
+            <p class="text-gray-600 leading-relaxed">
+                Découvrez comment l'audio numérique est transformé en paquets réseau.
+                Ajustez les paramètres et observez en temps réel l'impact sur la latence,
+                la bande passante et la structure des paquets.
+            </p>
+        </div>
+
+        <!-- SECTION 1 : Paramètres de Simulation -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">
+                📊 Paramètres de Simulation
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Colonne 1 : Protocole et Audio -->
+                <div class="space-y-6">
+                    <!-- Choix du Protocole -->
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <span class="tooltip">
+                                Protocole de Transport
+                                <span class="tooltiptext">
+                                    <strong>AES67</strong> : Standard ouvert utilisant RTP (Real-time Transport Protocol) sur UDP.
+                                    <br><br>
+                                    <strong>Dante</strong> : Protocole propriétaire d'Audinate, également basé sur UDP mais sans RTP.
+                                    Le changement affecte les en-têtes du paquet.
+                                </span>
+                            </span>
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center cursor-pointer bg-white px-4 py-3 rounded-lg border-2 border-blue-300 hover:border-blue-500 transition-all">
+                                <input type="radio" name="protocol" value="aes67" checked class="mr-2 w-4 h-4">
+                                <span class="font-medium">AES67</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer bg-white px-4 py-3 rounded-lg border-2 border-blue-300 hover:border-blue-500 transition-all">
+                                <input type="radio" name="protocol" value="dante" class="mr-2 w-4 h-4">
+                                <span class="font-medium">Dante</span>
+                            </label>
+                        </div>
+                        <div id="port-info" class="mt-3 text-sm text-gray-600 bg-white p-3 rounded">
+                            Port typique : <span id="port-display" class="font-mono font-semibold">RTP 5004</span>
+                        </div>
+                    </div>
+
+                    <!-- Paramètres Audio -->
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h4 class="font-semibold text-gray-800 mb-4">Paramètres Audio (Source)</h4>
+
+                        <!-- Taux d'échantillonnage -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Taux d'échantillonnage
+                                    <span class="tooltiptext">
+                                        Nombre d'échantillons capturés par seconde (en Hz).
+                                        <br><br>
+                                        • 44.1 kHz : Standard CD audio
+                                        <br>
+                                        • 48 kHz : Standard vidéo et broadcast
+                                        <br>
+                                        • 96 kHz : Audio haute résolution
+                                        <br><br>
+                                        Plus élevé = meilleure qualité mais plus de données à transporter.
+                                    </span>
+                                </span>
+                            </label>
+                            <select id="sample-rate" class="w-full border-2 border-gray-300 rounded-lg p-2 focus:border-blue-500 focus:outline-none">
+                                <option value="44100">44.1 kHz</option>
+                                <option value="48000" selected>48 kHz</option>
+                                <option value="96000">96 kHz</option>
+                            </select>
+                        </div>
+
+                        <!-- Profondeur de bits -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Profondeur de bits
+                                    <span class="tooltiptext">
+                                        Nombre de bits utilisés pour encoder chaque échantillon.
+                                        <br><br>
+                                        • 16 bits : Standard CD (96 dB de dynamique)
+                                        <br>
+                                        • 24 bits : Standard professionnel (144 dB de dynamique)
+                                        <br>
+                                        • 32 bits : Float, utilisé pour le traitement
+                                        <br><br>
+                                        Plus élevé = meilleure dynamique mais paquets plus gros.
+                                    </span>
+                                </span>
+                            </label>
+                            <select id="bit-depth" class="w-full border-2 border-gray-300 rounded-lg p-2 focus:border-blue-500 focus:outline-none">
+                                <option value="16">16 bits</option>
+                                <option value="24" selected>24 bits</option>
+                                <option value="32">32 bits</option>
+                            </select>
+                        </div>
+
+                        <!-- Nombre de canaux -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Nombre de canaux
+                                    <span class="tooltiptext">
+                                        Nombre de flux audio indépendants transportés dans un seul paquet.
+                                        <br><br>
+                                        • 2 canaux : Stéréo
+                                        <br>
+                                        • 8 canaux : Typique pour une scène multi-micro
+                                        <br>
+                                        • 64 canaux : Configuration de console numérique
+                                        <br><br>
+                                        Plus de canaux = paquet plus gros mais meilleure utilisation du réseau.
+                                    </span>
+                                </span>
+                                : <span id="channels-value" class="font-semibold text-blue-600">8</span>
+                            </label>
+                            <input type="range" id="channels" min="1" max="64" value="8" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>1</span>
+                                <span>64</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonne 2 : Paquetisation et Réseau -->
+                <div class="space-y-6">
+                    <!-- Paramètres de Paquetisation -->
+                    <div class="bg-yellow-50 p-6 rounded-lg border-2 border-yellow-300">
+                        <h4 class="font-semibold text-gray-800 mb-4">⚡ Paquetisation (CRITIQUE pour la latence)</h4>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Échantillons par paquet
+                                    <span class="tooltiptext">
+                                        <strong>LE PARAMÈTRE CLÉ !</strong>
+                                        <br><br>
+                                        Nombre d'échantillons de chaque canal regroupés dans un paquet.
+                                        <br><br>
+                                        • Faible (32-64) : Latence minimale mais beaucoup de paquets (overhead réseau)
+                                        <br>
+                                        • Moyen (128-256) : Bon compromis
+                                        <br>
+                                        • Élevé (512-1024) : Moins de paquets mais latence accrue
+                                        <br><br>
+                                        La latence de paquetisation = temps pour remplir un paquet complet.
+                                    </span>
+                                </span>
+                            </label>
+                            <select id="samples-per-packet" class="w-full border-2 border-yellow-400 rounded-lg p-2 focus:border-yellow-600 focus:outline-none font-semibold">
+                                <option value="32">32 échantillons</option>
+                                <option value="64">64 échantillons</option>
+                                <option value="128">128 échantillons</option>
+                                <option value="256">256 échantillons</option>
+                                <option value="512">512 échantillons</option>
+                                <option value="1024">1024 échantillons</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Paramètres Réseau et Buffers -->
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h4 class="font-semibold text-gray-800 mb-4">Réseau et Buffers</h4>
+
+                        <!-- Nombre de sauts -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Nombre de sauts (Switches)
+                                    <span class="tooltiptext">
+                                        Nombre d'équipements réseau traversés entre l'émetteur et le récepteur.
+                                        <br><br>
+                                        Chaque switch ajoute une petite latence (environ 0.1 ms par switch moderne).
+                                        <br><br>
+                                        En pratique, cette latence est souvent négligeable par rapport aux buffers.
+                                    </span>
+                                </span>
+                                : <span id="hops-value" class="font-semibold text-blue-600">3</span>
+                            </label>
+                            <input type="range" id="hops" min="1" max="10" value="3" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>1</span>
+                                <span>10</span>
+                            </div>
+                        </div>
+
+                        <!-- Buffer d'émission -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Buffer d'émission (ms)
+                                    <span class="tooltiptext">
+                                        Délai avant l'envoi du paquet sur le réseau.
+                                        <br><br>
+                                        Permet de lisser l'émission et de gérer les pics de charge CPU.
+                                        <br><br>
+                                        Généralement minimal (0-2 ms) dans les systèmes audio professionnels.
+                                    </span>
+                                </span>
+                                : <span id="tx-buffer-value" class="font-semibold text-blue-600">1 ms</span>
+                            </label>
+                            <input type="range" id="tx-buffer" min="0" max="10" step="0.5" value="1" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>0 ms</span>
+                                <span>10 ms</span>
+                            </div>
+                        </div>
+
+                        <!-- Jitter Buffer -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <span class="tooltip">
+                                    Jitter Buffer (Réception, ms)
+                                    <span class="tooltiptext">
+                                        Buffer de réception qui compense les variations de délai réseau (gigue/jitter).
+                                        <br><br>
+                                        • Trop faible : Risque de décrochages (dropouts)
+                                        <br>
+                                        • Trop élevé : Latence inutilement haute
+                                        <br><br>
+                                        Sur un réseau bien configuré : 2-5 ms suffisent.
+                                        <br>
+                                        Sur un réseau standard : 10-20 ms recommandés.
+                                    </span>
+                                </span>
+                                : <span id="jitter-buffer-value" class="font-semibold text-blue-600">5 ms</span>
+                            </label>
+                            <input type="range" id="jitter-buffer" min="1" max="50" value="5" class="w-full">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>1 ms</span>
+                                <span>50 ms</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2 : Visualisation de la Donnée -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">
+                📦 Visualisation du Paquet Réseau
+            </h3>
+
+            <!-- Le Paquet Éclaté -->
+            <div class="mb-8">
+                <h4 class="font-semibold text-gray-700 mb-4">Structure du paquet (couches OSI)</h4>
+                <div class="space-y-2" id="packet-layers">
+                    <!-- Les couches seront générées dynamiquement -->
+                </div>
+                <div id="mtu-warning" class="mt-4 bg-red-100 border-2 border-red-400 text-red-800 p-4 rounded-lg hidden">
+                    <strong>⚠️ Attention :</strong> La taille du paquet dépasse le MTU Ethernet standard (1518 octets).
+                    Risque de fragmentation ! Réduisez le nombre de canaux ou d'échantillons par paquet.
+                </div>
+            </div>
+
+            <!-- Zoom sur la Payload -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-2 border-blue-300">
+                <h4 class="font-semibold text-gray-800 mb-4">
+                    <span class="tooltip">
+                        🎵 Zoom sur la Payload Audio (Données Utiles)
+                        <span class="tooltiptext">
+                            La payload est la partie du paquet qui contient réellement les données audio.
+                            <br><br>
+                            Tout le reste (Ethernet, IP, UDP, RTP) est de l'overhead nécessaire au transport réseau.
+                            <br><br>
+                            L'efficacité = Payload / Taille Totale du paquet.
+                        </span>
+                    </span>
+                </h4>
+                <div id="payload-info" class="mb-4 text-gray-700"></div>
+                <div id="payload-visualization" class="bg-white p-4 rounded-lg overflow-auto max-h-64">
+                    <!-- Visualisation des échantillons -->
+                </div>
+                <div id="efficiency-info" class="mt-4 text-sm text-gray-600"></div>
+            </div>
+        </div>
+
+        <!-- SECTION 3 : Analyse de Latence et de Charge -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-purple-500 pb-2">
+                ⏱️ Analyse de Latence et de Charge
+            </h3>
+
+            <!-- Bilan de Latence -->
+            <div class="mb-8">
+                <h4 class="font-semibold text-gray-800 mb-4">Décomposition de la Latence (ms)</h4>
+                <div class="space-y-4">
+                    <!-- Latence de paquetisation -->
+                    <div class="flex items-center">
+                        <div class="w-48 text-sm font-medium text-gray-700">
+                            <span class="tooltip">
+                                Paquetisation
+                                <span class="tooltiptext">
+                                    Temps nécessaire pour accumuler suffisamment d'échantillons pour remplir un paquet.
+                                    <br><br>
+                                    Formule : (Échantillons par paquet / Taux d'échantillonnage) × 1000
+                                    <br><br>
+                                    C'est généralement la composante DOMINANTE de la latence totale !
+                                </span>
+                            </span>
+                        </div>
+                        <div class="flex-1 bg-gray-200 rounded-full h-8 relative overflow-hidden">
+                            <div id="latency-packetization-bar" class="bg-yellow-500 h-full transition-all duration-300 flex items-center justify-end pr-2">
+                                <span id="latency-packetization" class="text-sm font-bold text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buffer émission -->
+                    <div class="flex items-center">
+                        <div class="w-48 text-sm font-medium text-gray-700">
+                            <span class="tooltip">
+                                Buffer Émission
+                                <span class="tooltiptext">
+                                    Délai intentionnel avant l'envoi du paquet sur le réseau.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="flex-1 bg-gray-200 rounded-full h-8 relative overflow-hidden">
+                            <div id="latency-tx-bar" class="bg-blue-500 h-full transition-all duration-300 flex items-center justify-end pr-2">
+                                <span id="latency-tx" class="text-sm font-bold text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Latence réseau -->
+                    <div class="flex items-center">
+                        <div class="w-48 text-sm font-medium text-gray-700">
+                            <span class="tooltip">
+                                Latence Réseau
+                                <span class="tooltiptext">
+                                    Délai cumulé des équipements réseau (switches).
+                                    <br><br>
+                                    Estimation : 0.1 ms par switch.
+                                    <br><br>
+                                    Sur un réseau bien configuré, c'est la partie la plus faible de la latence.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="flex-1 bg-gray-200 rounded-full h-8 relative overflow-hidden">
+                            <div id="latency-network-bar" class="bg-green-500 h-full transition-all duration-300 flex items-center justify-end pr-2">
+                                <span id="latency-network" class="text-sm font-bold text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jitter Buffer -->
+                    <div class="flex items-center">
+                        <div class="w-48 text-sm font-medium text-gray-700">
+                            <span class="tooltip">
+                                Jitter Buffer
+                                <span class="tooltiptext">
+                                    Buffer de réception pour compenser les variations du réseau.
+                                    <br><br>
+                                    C'est une "assurance" contre les irrégularités, mais elle coûte de la latence.
+                                </span>
+                            </span>
+                        </div>
+                        <div class="flex-1 bg-gray-200 rounded-full h-8 relative overflow-hidden">
+                            <div id="latency-jitter-bar" class="bg-purple-500 h-full transition-all duration-300 flex items-center justify-end pr-2">
+                                <span id="latency-jitter" class="text-sm font-bold text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex items-center border-t-2 border-gray-300 pt-4">
+                        <div class="w-48 text-base font-bold text-gray-800">
+                            LATENCE TOTALE
+                        </div>
+                        <div class="flex-1 bg-gray-300 rounded-full h-10 relative overflow-hidden">
+                            <div id="latency-total-bar" class="bg-gradient-to-r from-red-500 to-red-600 h-full transition-all duration-300 flex items-center justify-end pr-3">
+                                <span id="latency-total" class="text-lg font-bold text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charge Réseau -->
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-300">
+                <h4 class="font-semibold text-gray-800 mb-4">📊 Charge Réseau</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <div class="text-sm text-gray-600 mb-1">
+                            <span class="tooltip">
+                                Paquets par Seconde (PPS)
+                                <span class="tooltiptext">
+                                    Nombre de paquets UDP envoyés chaque seconde.
+                                    <br><br>
+                                    Formule : Taux d'échantillonnage / Échantillons par paquet
+                                    <br><br>
+                                    Exemple : 48000 Hz / 128 échantillons = 375 paquets/s
+                                </span>
+                            </span>
+                        </div>
+                        <div id="pps" class="text-3xl font-bold text-purple-600"></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <div class="text-sm text-gray-600 mb-1">
+                            <span class="tooltip">
+                                Bande Passante
+                                <span class="tooltiptext">
+                                    Débit total sur le réseau (en Mégabits par seconde).
+                                    <br><br>
+                                    Formule : Taille du paquet (bits) × Paquets par seconde
+                                    <br><br>
+                                    Inclut tous les en-têtes (overhead).
+                                </span>
+                            </span>
+                        </div>
+                        <div id="bandwidth" class="text-3xl font-bold text-pink-600"></div>
+                    </div>
+                </div>
+                <div id="network-analysis" class="mt-4 p-4 bg-white rounded-lg text-sm text-gray-700 leading-relaxed">
+                    <!-- Analyse dynamique -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="text-center text-gray-600 text-sm">
+            <p>Application éducative — Comprendre la paquetisation audio sur IP</p>
+            <p class="mt-2">💡 Astuce : Expérimentez avec les paramètres et observez les compromis latence/efficacité !</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // APPLICATION DE VISUALISATION DES STACKS RÉSEAU AUDIO
+        // ============================================================================
+
+        // État de l'application
+        const state = {
+            protocol: 'aes67',
+            sampleRate: 48000,
+            bitDepth: 24,
+            channels: 8,
+            samplesPerPacket: 128,
+            hops: 3,
+            txBuffer: 1,
+            jitterBuffer: 5
+        };
+
+        // Constantes réseau (tailles en octets)
+        const SIZES = {
+            ethernet: 14,      // En-tête Ethernet
+            fcs: 4,            // Frame Check Sequence (Ethernet)
+            ip: 20,            // En-tête IPv4
+            udp: 8,            // En-tête UDP
+            rtp: 12,           // En-tête RTP (uniquement AES67)
+            mtu: 1518          // MTU Ethernet standard
+        };
+
+        // ============================================================================
+        // INITIALISATION DES ÉVÉNEMENTS
+        // ============================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Écouteurs pour tous les contrôles
+            document.querySelectorAll('input[name="protocol"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    state.protocol = e.target.value;
+                    updatePortInfo();
+                    calculate();
+                });
+            });
+
+            document.getElementById('sample-rate').addEventListener('change', (e) => {
+                state.sampleRate = parseInt(e.target.value);
+                calculate();
+            });
+
+            document.getElementById('bit-depth').addEventListener('change', (e) => {
+                state.bitDepth = parseInt(e.target.value);
+                calculate();
+            });
+
+            document.getElementById('channels').addEventListener('input', (e) => {
+                state.channels = parseInt(e.target.value);
+                document.getElementById('channels-value').textContent = state.channels;
+                calculate();
+            });
+
+            document.getElementById('samples-per-packet').addEventListener('change', (e) => {
+                state.samplesPerPacket = parseInt(e.target.value);
+                calculate();
+            });
+
+            document.getElementById('hops').addEventListener('input', (e) => {
+                state.hops = parseInt(e.target.value);
+                document.getElementById('hops-value').textContent = state.hops;
+                calculate();
+            });
+
+            document.getElementById('tx-buffer').addEventListener('input', (e) => {
+                state.txBuffer = parseFloat(e.target.value);
+                document.getElementById('tx-buffer-value').textContent = state.txBuffer + ' ms';
+                calculate();
+            });
+
+            document.getElementById('jitter-buffer').addEventListener('input', (e) => {
+                state.jitterBuffer = parseFloat(e.target.value);
+                document.getElementById('jitter-buffer-value').textContent = state.jitterBuffer + ' ms';
+                calculate();
+            });
+
+            // Calcul initial
+            updatePortInfo();
+            calculate();
+        });
+
+        // ============================================================================
+        // MISE À JOUR DES INFORMATIONS DE PORT
+        // ============================================================================
+
+        function updatePortInfo() {
+            const portDisplay = document.getElementById('port-display');
+            if (state.protocol === 'aes67') {
+                portDisplay.textContent = 'RTP 5004';
+            } else {
+                portDisplay.textContent = 'UDP 4321';
+            }
+        }
+
+        // ============================================================================
+        // CALCULS PRINCIPAUX
+        // ============================================================================
+
+        function calculate() {
+            // 1. Calcul de la taille de la payload audio (octets)
+            // Formule : Canaux × Échantillons × (Bits / 8)
+            const payloadSize = state.channels * state.samplesPerPacket * (state.bitDepth / 8);
+
+            // 2. Calcul de la taille totale du paquet (octets, couche 2)
+            const headerSize = SIZES.ethernet + SIZES.ip + SIZES.udp +
+                               (state.protocol === 'aes67' ? SIZES.rtp : 0);
+            const totalPacketSize = SIZES.ethernet + SIZES.ip + SIZES.udp +
+                                   (state.protocol === 'aes67' ? SIZES.rtp : 0) +
+                                   payloadSize + SIZES.fcs;
+
+            // 3. Calcul de l'efficacité (ratio payload / taille totale)
+            const efficiency = (payloadSize / totalPacketSize) * 100;
+
+            // 4. Vérification du MTU
+            const exceedsMTU = totalPacketSize > SIZES.mtu;
+
+            // 5. Calcul de la latence de paquetisation (ms)
+            // Formule : (Échantillons par paquet / Taux d'échantillonnage) × 1000
+            const latencyPacketization = (state.samplesPerPacket / state.sampleRate) * 1000;
+
+            // 6. Latence réseau (ms) - 0.1 ms par switch
+            const latencyNetwork = state.hops * 0.1;
+
+            // 7. Latence totale (ms)
+            const latencyTotal = latencyPacketization + state.txBuffer + latencyNetwork + state.jitterBuffer;
+
+            // 8. Calcul des paquets par seconde
+            // Formule : Taux d'échantillonnage / Échantillons par paquet
+            const packetsPerSecond = state.sampleRate / state.samplesPerPacket;
+
+            // 9. Calcul de la bande passante (Mbps)
+            // Formule : Taille du paquet (bits) × Paquets par seconde / 1 000 000
+            const bandwidth = (totalPacketSize * 8 * packetsPerSecond) / 1000000;
+
+            // Mise à jour de l'interface
+            updatePacketVisualization(payloadSize, totalPacketSize, efficiency, exceedsMTU);
+            updatePayloadVisualization(payloadSize);
+            updateLatencyVisualization(latencyPacketization, latencyNetwork, latencyTotal);
+            updateNetworkLoad(packetsPerSecond, bandwidth);
+        }
+
+        // ============================================================================
+        // VISUALISATION DU PAQUET ÉCLATÉ
+        // ============================================================================
+
+        function updatePacketVisualization(payloadSize, totalPacketSize, efficiency, exceedsMTU) {
+            const container = document.getElementById('packet-layers');
+
+            // Calcul des tailles
+            const ethernetSize = SIZES.ethernet;
+            const ipSize = SIZES.ip;
+            const udpSize = SIZES.udp;
+            const rtpSize = state.protocol === 'aes67' ? SIZES.rtp : 0;
+            const fcsSize = SIZES.fcs;
+
+            // Génération des couches (de l'extérieur vers l'intérieur)
+            const layers = [
+                {
+                    name: 'Trame Ethernet',
+                    size: ethernetSize + fcsSize,
+                    color: 'from-gray-400 to-gray-500',
+                    indent: 0,
+                    description: `En-tête (${ethernetSize} o) + FCS (${fcsSize} o)`
+                },
+                {
+                    name: 'En-tête IP',
+                    size: ipSize,
+                    color: 'from-blue-400 to-blue-500',
+                    indent: 1,
+                    description: 'IPv4'
+                },
+                {
+                    name: 'En-tête UDP',
+                    size: udpSize,
+                    color: 'from-green-400 to-green-500',
+                    indent: 2,
+                    description: 'Transport'
+                }
+            ];
+
+            if (state.protocol === 'aes67') {
+                layers.push({
+                    name: 'En-tête RTP',
+                    size: rtpSize,
+                    color: 'from-yellow-400 to-yellow-500',
+                    indent: 3,
+                    description: 'Real-time Transport Protocol'
+                });
+            }
+
+            layers.push({
+                name: 'Payload Audio (Données Utiles)',
+                size: payloadSize,
+                color: 'from-purple-500 to-pink-500',
+                indent: state.protocol === 'aes67' ? 4 : 3,
+                description: `${state.channels} canaux × ${state.samplesPerPacket} échantillons × ${state.bitDepth} bits`,
+                highlight: true
+            });
+
+            // Génération du HTML
+            container.innerHTML = layers.map(layer => `
+                <div class="packet-layer flex items-center" style="margin-left: ${layer.indent * 20}px">
+                    <div class="flex-1 bg-gradient-to-r ${layer.color} text-white p-4 rounded-lg shadow-md ${layer.highlight ? 'border-4 border-yellow-300' : ''}">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-semibold text-lg">${layer.name}</div>
+                                <div class="text-sm opacity-90">${layer.description}</div>
+                            </div>
+                            <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                                <span class="font-bold text-xl">${layer.size}</span>
+                                <span class="text-sm ml-1">octets</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Affichage de la taille totale
+            container.innerHTML += `
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg border-2 border-gray-400">
+                    <div class="flex justify-between items-center">
+                        <div class="font-bold text-gray-800">
+                            TAILLE TOTALE DU PAQUET (Couche 2)
+                        </div>
+                        <div>
+                            <span class="text-2xl font-bold ${exceedsMTU ? 'text-red-600' : 'text-green-600'}">
+                                ${totalPacketSize}
+                            </span>
+                            <span class="text-gray-600 ml-1">octets</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-600">
+                        Efficacité : <strong>${efficiency.toFixed(1)}%</strong> de données utiles
+                        (${payloadSize} o de payload / ${totalPacketSize} o total)
+                    </div>
+                </div>
+            `;
+
+            // Gestion de l'alerte MTU
+            const mtuWarning = document.getElementById('mtu-warning');
+            if (exceedsMTU) {
+                mtuWarning.classList.remove('hidden');
+            } else {
+                mtuWarning.classList.add('hidden');
+            }
+        }
+
+        // ============================================================================
+        // VISUALISATION DE LA PAYLOAD AUDIO
+        // ============================================================================
+
+        function updatePayloadVisualization(payloadSize) {
+            const container = document.getElementById('payload-visualization');
+            const infoDiv = document.getElementById('payload-info');
+            const efficiencyDiv = document.getElementById('efficiency-info');
+
+            // Informations textuelles
+            infoDiv.innerHTML = `
+                <p class="font-semibold">
+                    Ce paquet transporte <span class="text-blue-600 text-lg">${state.samplesPerPacket}</span>
+                    échantillons pour <span class="text-blue-600 text-lg">${state.channels}</span>
+                    ${state.channels > 1 ? 'canaux' : 'canal'}.
+                </p>
+                <p class="text-sm mt-1">
+                    Taille de la payload : <strong>${payloadSize} octets</strong>
+                    (${state.channels} × ${state.samplesPerPacket} × ${state.bitDepth / 8} octets/échantillon)
+                </p>
+            `;
+
+            // Visualisation des échantillons
+            // Limiter l'affichage pour éviter la surcharge (max 16 canaux × 64 échantillons visibles)
+            const displayChannels = Math.min(state.channels, 16);
+            const displaySamples = Math.min(state.samplesPerPacket, 64);
+
+            let html = '';
+            for (let ch = 0; ch < displayChannels; ch++) {
+                html += `<div class="mb-2">`;
+                html += `<div class="text-xs text-gray-500 mb-1">Canal ${ch + 1}</div>`;
+                html += `<div class="flex flex-wrap gap-1">`;
+                for (let s = 0; s < displaySamples; s++) {
+                    html += `<div class="sample-dot" title="Canal ${ch + 1}, Échantillon ${s + 1}"></div>`;
+                }
+                if (state.samplesPerPacket > displaySamples) {
+                    html += `<span class="text-xs text-gray-500 ml-2">... +${state.samplesPerPacket - displaySamples} échantillons</span>`;
+                }
+                html += `</div>`;
+                html += `</div>`;
+            }
+
+            if (state.channels > displayChannels) {
+                html += `<div class="text-sm text-gray-500 mt-2">... +${state.channels - displayChannels} canaux supplémentaires</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // ============================================================================
+        // VISUALISATION DE LA LATENCE
+        // ============================================================================
+
+        function updateLatencyVisualization(latencyPacketization, latencyNetwork, latencyTotal) {
+            // Calcul de la largeur maximale pour les barres (basée sur la latence totale)
+            const maxWidth = 100; // Pourcentage
+
+            // Mise à jour des barres et des valeurs
+            updateLatencyBar('packetization', latencyPacketization, latencyTotal, maxWidth);
+            updateLatencyBar('tx', state.txBuffer, latencyTotal, maxWidth);
+            updateLatencyBar('network', latencyNetwork, latencyTotal, maxWidth);
+            updateLatencyBar('jitter', state.jitterBuffer, latencyTotal, maxWidth);
+            updateLatencyBar('total', latencyTotal, latencyTotal, maxWidth);
+
+            // Message pédagogique
+            const efficiencyDiv = document.getElementById('efficiency-info');
+            let message = '';
+
+            if (latencyPacketization > latencyTotal * 0.5) {
+                message = `⚠️ La latence de paquetisation (${latencyPacketization.toFixed(2)} ms) représente plus de 50% de la latence totale.
+                          Réduisez le nombre d'échantillons par paquet pour diminuer la latence.`;
+            } else if (state.jitterBuffer > latencyTotal * 0.5) {
+                message = `Le Jitter Buffer (${state.jitterBuffer} ms) représente plus de 50% de la latence totale.
+                          Si votre réseau est stable, vous pouvez le réduire.`;
+            } else {
+                message = `✅ Bonne répartition de la latence. La latence de paquetisation est de ${latencyPacketization.toFixed(2)} ms
+                          pour ${state.samplesPerPacket} échantillons à ${state.sampleRate / 1000} kHz.`;
+            }
+
+            efficiencyDiv.innerHTML = `<p class="text-sm">${message}</p>`;
+        }
+
+        function updateLatencyBar(type, value, total, maxWidth) {
+            const bar = document.getElementById(`latency-${type}-bar`);
+            const text = document.getElementById(`latency-${type}`);
+
+            // Calcul de la largeur proportionnelle
+            const width = (value / total) * maxWidth;
+
+            bar.style.width = `${width}%`;
+            text.textContent = `${value.toFixed(2)} ms`;
+        }
+
+        // ============================================================================
+        // CHARGE RÉSEAU
+        // ============================================================================
+
+        function updateNetworkLoad(packetsPerSecond, bandwidth) {
+            document.getElementById('pps').textContent = Math.round(packetsPerSecond) + ' pps';
+            document.getElementById('bandwidth').textContent = bandwidth.toFixed(2) + ' Mbps';
+
+            // Analyse dynamique
+            const analysisDiv = document.getElementById('network-analysis');
+            let analysis = `
+                <p class="mb-2">
+                    <strong>Analyse :</strong> Avec ces réglages, votre flux audio de
+                    <strong>${state.channels} ${state.channels > 1 ? 'canaux' : 'canal'}</strong>
+                    utilise <strong>${bandwidth.toFixed(2)} Mbps</strong> de bande passante.
+                </p>
+            `;
+
+            if (state.samplesPerPacket < 128) {
+                analysis += `
+                    <p class="text-orange-600">
+                        💡 Vous utilisez des paquets très petits (${state.samplesPerPacket} échantillons),
+                        ce qui génère <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>.
+                        Cela augmente la charge CPU et le nombre d'interruptions réseau,
+                        mais minimise la latence.
+                    </p>
+                `;
+            } else if (state.samplesPerPacket > 512) {
+                analysis += `
+                    <p class="text-blue-600">
+                        💡 Vous utilisez de gros paquets (${state.samplesPerPacket} échantillons),
+                        ce qui ne génère que <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>.
+                        C'est très efficace pour le réseau, mais augmente la latence de paquetisation.
+                    </p>
+                `;
+            } else {
+                analysis += `
+                    <p class="text-green-600">
+                        ✅ Configuration équilibrée : <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>
+                        est un bon compromis entre latence et charge réseau.
+                    </p>
+                `;
+            }
+
+            // Comparaison avec un réseau Gigabit
+            const gigabitCapacity = 1000; // Mbps
+            const percentUsed = (bandwidth / gigabitCapacity) * 100;
+
+            analysis += `
+                <p class="mt-2 text-sm text-gray-600">
+                    Sur un réseau Gigabit (1000 Mbps), ce flux représente
+                    <strong>${percentUsed.toFixed(3)}%</strong> de la capacité totale.
+                    ${state.channels >= 32 ? 'Avec autant de canaux, veillez à ne pas saturer le réseau avec de multiples flux.' :
+                      'Vous pouvez facilement transporter plusieurs flux similaires sur le même réseau.'}
+                </p>
+            `;
+
+            analysisDiv.innerHTML = analysis;
+        }
+    </script>
+</body>
+</html>
