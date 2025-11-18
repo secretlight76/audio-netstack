@@ -29,7 +29,8 @@ export function calculateHeaderSize() {
  * @returns {number} Total size in bytes
  */
 export function calculateTotalPacketSize(payloadSize) {
-    return SIZES.ethernet + SIZES.ip + SIZES.udp +
+    const vlanSize = state.vlanTagging ? 4 : 0; // 802.1Q VLAN tag adds 4 bytes
+    return SIZES.ethernet + vlanSize + SIZES.ip + SIZES.udp +
            (state.protocol === 'aes67' ? SIZES.rtp : 0) +
            payloadSize + SIZES.fcs;
 }
@@ -63,12 +64,23 @@ export function calculatePacketizationLatency() {
 }
 
 /**
+ * Calculates cable propagation latency
+ * @returns {number} Latency in ms (speed of light in copper ~200,000 km/s = 5 ns/m)
+ */
+export function calculateCablePropagation() {
+    // 5 nanoseconds per meter = 0.000005 ms per meter
+    return state.cableDistance * 0.000005;
+}
+
+/**
  * Calculates network latency in milliseconds
- * @returns {number} Latency in ms based on switch type and hop count
+ * @returns {number} Latency in ms based on switch type, hop count and cable propagation
  */
 export function calculateNetworkLatency() {
     const latencyPerHop = SWITCH_LATENCY[state.switchType] || SWITCH_LATENCY['av-dedicated'];
-    return state.hops * latencyPerHop;
+    const switchLatency = state.hops * latencyPerHop;
+    const cableLatency = calculateCablePropagation();
+    return switchLatency + cableLatency;
 }
 
 /**

@@ -174,6 +174,19 @@ function initializeEventListeners() {
         calculate();
     });
 
+    // Cable Distance
+    document.getElementById('cable-distance').addEventListener('input', (e) => {
+        state.cableDistance = parseInt(e.target.value);
+        document.getElementById('cable-distance-value').textContent = state.cableDistance + ' m';
+        calculate();
+    });
+
+    // VLAN Tagging
+    document.getElementById('vlan-tagging').addEventListener('change', (e) => {
+        state.vlanTagging = e.target.checked;
+        calculate();
+    });
+
     // TX Buffer
     document.getElementById('tx-buffer').addEventListener('input', (e) => {
         state.txBuffer = parseFloat(e.target.value);

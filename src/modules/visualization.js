@@ -264,6 +264,34 @@ export function updateNetworkLoad(results) {
     `;
 
     analysisDiv.innerHTML = analysis;
+
+    // Update bandwidth gauge
+    const gaugeBar = document.getElementById('bandwidth-gauge-bar');
+    const gaugeText = document.getElementById('bandwidth-gauge-text');
+    const bandwidthPercent = document.getElementById('bandwidth-percent');
+
+    bandwidthPercent.textContent = percentUsed.toFixed(3) + '%';
+
+    // Set width
+    gaugeBar.style.width = Math.min(100, percentUsed) + '%';
+
+    // Color coding
+    let gaugeColor = '';
+    if (percentUsed >= 80) {
+        gaugeColor = 'bg-red-500 dark:bg-red-600';
+        gaugeText.textContent = 'CRITICAL';
+    } else if (percentUsed >= 50) {
+        gaugeColor = 'bg-orange-500 dark:bg-orange-600';
+        gaugeText.textContent = 'HIGH';
+    } else if (percentUsed >= 20) {
+        gaugeColor = 'bg-yellow-500 dark:bg-yellow-600';
+        gaugeText.textContent = 'MODERATE';
+    } else {
+        gaugeColor = 'bg-emerald-500 dark:bg-emerald-600';
+        gaugeText.textContent = 'LOW';
+    }
+
+    gaugeBar.className = `h-full transition-all duration-300 flex items-center justify-end pr-2 ${gaugeColor}`;
 }
 
 /**
@@ -439,6 +467,172 @@ export function updatePacketLossImpact(packetsPerSecond, packetizationLatency) {
 }
 
 /**
+ * Updates configuration status with smart visual indicators
+ * @param {Object} results - Calculation results
+ */
+export function updateConfigStatus(results) {
+    const container = document.getElementById('config-status');
+    const { totalLatency, bandwidth, mtuExceeded } = results;
+
+    const issues = [];
+    let status = 'optimal'; // optimal, acceptable, problematic
+    let statusIcon = '🟢';
+    let statusText = 'Optimal';
+    let statusColor = 'emerald';
+
+    // Check latency
+    if (totalLatency > 10) {
+        issues.push({ severity: 'high', text: `High latency (${formatLatency(totalLatency)})` });
+        status = 'problematic';
+    } else if (totalLatency > 5) {
+        issues.push({ severity: 'medium', text: `Moderate latency (${formatLatency(totalLatency)})` });
+        if (status === 'optimal') status = 'acceptable';
+    }
+
+    // Check bandwidth utilization
+    const bandwidthPercent = (bandwidth / 1000) * 100;
+    if (bandwidthPercent > 80) {
+        issues.push({ severity: 'high', text: `High bandwidth usage (${bandwidthPercent.toFixed(1)}%)` });
+        status = 'problematic';
+    } else if (bandwidthPercent > 50) {
+        issues.push({ severity: 'medium', text: `Moderate bandwidth usage (${bandwidthPercent.toFixed(1)}%)` });
+        if (status === 'optimal') status = 'acceptable';
+    }
+
+    // Check MTU
+    if (mtuExceeded) {
+        issues.push({ severity: 'high', text: 'Packet exceeds MTU (fragmentation risk)' });
+        status = 'problematic';
+    }
+
+    // Check packet loss
+    if (state.packetLoss > 0.1) {
+        issues.push({ severity: 'high', text: `Packet loss too high (${state.packetLoss.toFixed(1)}%)` });
+        status = 'problematic';
+    } else if (state.packetLoss > 0) {
+        issues.push({ severity: 'medium', text: `Some packet loss (${state.packetLoss.toFixed(1)}%)` });
+        if (status === 'optimal') status = 'acceptable';
+    }
+
+    // Set status based on overall assessment
+    if (status === 'problematic') {
+        statusIcon = '🔴';
+        statusText = 'Problematic';
+        statusColor = 'red';
+    } else if (status === 'acceptable') {
+        statusIcon = '🟡';
+        statusText = 'Acceptable';
+        statusColor = 'yellow';
+    }
+
+    let html = `
+        <div class="flex items-center gap-3 p-4 rounded-lg bg-${statusColor}-50 dark:bg-${statusColor}-900/20 border-2 border-${statusColor}-400 dark:border-${statusColor}-600">
+            <div class="text-4xl">${statusIcon}</div>
+            <div class="flex-1">
+                <div class="font-bold text-lg text-${statusColor}-800 dark:text-${statusColor}-400">${statusText}</div>
+                <div class="text-sm text-${statusColor}-700 dark:text-${statusColor}-500">
+                    ${status === 'optimal' ? 'Configuration meets professional AoIP standards' :
+                      status === 'acceptable' ? 'Configuration functional but can be improved' :
+                      'Configuration may cause audio issues'}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Show issues if any
+    if (issues.length > 0) {
+        html += '<div class="mt-3 space-y-2">';
+        issues.forEach(issue => {
+            const icon = issue.severity === 'high' ? '⚠️' : '⚡';
+            html += `
+                <div class="flex items-start gap-2 text-xs text-gray-700 dark:text-gray-300">
+                    <span>${icon}</span>
+                    <span>${issue.text}</span>
+                </div>
+            `;
+        });
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+/**
+ * Updates packet journey timeline visualization
+ * @param {Object} results - Calculation results
+ */
+export function updatePacketTimeline(results) {
+    const container = document.getElementById('packet-timeline');
+    const { packetizationLatency, networkLatency, totalLatency } = results;
+
+    // Build journey stages
+    const stages = [
+        { name: 'Sender', latency: 0, icon: '📡', type: 'endpoint' },
+        { name: 'Packetization', latency: packetizationLatency, icon: '📦', type: 'process' }
+    ];
+
+    // Add switches
+    const latencyPerHop = networkLatency / state.hops;
+    for (let i = 1; i <= state.hops; i++) {
+        stages.push({
+            name: `Switch ${i}`,
+            latency: latencyPerHop,
+            icon: '🔀',
+            type: 'switch'
+        });
+    }
+
+    // Add receiver
+    stages.push({ name: 'Receiver', latency: 0, icon: '🎧', type: 'endpoint' });
+
+    // Generate HTML
+    let html = '<div class="flex items-center justify-between gap-2 overflow-x-auto pb-4">';
+
+    stages.forEach((stage, index) => {
+        // Stage node
+        const isEndpoint = stage.type === 'endpoint';
+        const bgColor = isEndpoint ? 'bg-violet-100 dark:bg-violet-900/30' : 'bg-blue-100 dark:bg-blue-900/30';
+        const borderColor = isEndpoint ? 'border-violet-400 dark:border-violet-600' : 'border-blue-400 dark:border-blue-600';
+
+        html += `
+            <div class="flex flex-col items-center min-w-[80px] timeline-stage" style="animation: fadeIn 0.3s ease-in ${index * 0.1}s both">
+                <div class="${bgColor} ${borderColor} border-2 rounded-lg p-3 text-center shadow-sm">
+                    <div class="text-2xl mb-1">${stage.icon}</div>
+                    <div class="text-xs font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">${stage.name}</div>
+                    ${stage.latency > 0 ? `<div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1">${formatLatency(stage.latency)}</div>` : ''}
+                </div>
+            </div>
+        `;
+
+        // Arrow between stages (except after last)
+        if (index < stages.length - 1) {
+            html += `
+                <div class="flex flex-col items-center">
+                    <div class="text-2xl text-gray-400 dark:text-gray-600">→</div>
+                </div>
+            `;
+        }
+    });
+
+    html += '</div>';
+
+    // Add total summary
+    html += `
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Journey Time:</span>
+                <span class="text-lg font-bold text-violet-600 dark:text-violet-400">${formatLatency(totalLatency)}</span>
+            </div>
+            <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                TX Buffer: ${formatLatency(state.txBuffer)} + Jitter Buffer: ${formatLatency(state.jitterBuffer)}
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+/**
  * Updates entire interface with new results
  * @param {Object} results - Calculation results
  */
@@ -450,4 +644,6 @@ export function updateUI(results) {
     updateOverheadVisualization(results.overheadBreakdown, results.totalPacketSize);
     updateNetworkCapacity(results.bandwidth, results.maxStreams, results.recommendedStreams);
     updatePacketLossImpact(results.packetsPerSecond, results.packetizationLatency);
+    updatePacketTimeline(results);
+    updateConfigStatus(results);
 }
