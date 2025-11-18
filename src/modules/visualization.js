@@ -80,21 +80,20 @@ export function updatePacketVisualization(results) {
     `).join('');
 
     container.innerHTML += `
-        <div class="mt-4 p-4 bg-gray-100 rounded-lg border-2 border-gray-400">
+        <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-gray-400 dark:border-gray-600 transition-colors">
             <div class="flex justify-between items-center">
-                <div class="font-bold text-gray-800">
-                    TAILLE TOTALE DU PAQUET (Couche 2)
+                <div class="font-bold text-gray-800 dark:text-gray-200">
+                    TAILLE TOTALE (L2)
                 </div>
                 <div>
-                    <span class="text-2xl font-bold ${mtuExceeded ? 'text-red-600' : 'text-green-600'}">
+                    <span class="text-2xl font-bold ${mtuExceeded ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">
                         ${totalPacketSize}
                     </span>
-                    <span class="text-gray-600 ml-1">octets</span>
+                    <span class="text-gray-600 dark:text-gray-400 ml-1">o</span>
                 </div>
             </div>
-            <div class="mt-2 text-sm text-gray-600">
+            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 Efficacité : <strong>${efficiency.toFixed(1)}%</strong> de données utiles
-                (${payloadSize} o de payload / ${totalPacketSize} o total)
             </div>
         </div>
     `;
@@ -113,13 +112,12 @@ export function updatePayloadVisualization(payloadSize) {
 
     infoDiv.innerHTML = `
         <p class="font-semibold">
-            Ce paquet transporte <span class="text-blue-600 text-lg">${state.samplesPerPacket}</span>
-            échantillons pour <span class="text-blue-600 text-lg">${state.channels}</span>
+            Ce paquet transporte <span class="text-blue-600 dark:text-blue-400 text-lg">${state.samplesPerPacket}</span>
+            échantillons pour <span class="text-blue-600 dark:text-blue-400 text-lg">${state.channels}</span>
             ${state.channels > 1 ? 'canaux' : 'canal'}.
         </p>
         <p class="text-sm mt-1">
-            Taille de la payload : <strong>${payloadSize} octets</strong>
-            (${state.channels} × ${state.samplesPerPacket} × ${state.bitDepth / 8} octets/échantillon)
+            Taille : <strong>${payloadSize} octets</strong>
         </p>
     `;
 
@@ -129,19 +127,19 @@ export function updatePayloadVisualization(payloadSize) {
     let html = '';
     for (let ch = 0; ch < displayChannels; ch++) {
         html += `<div class="mb-2">`;
-        html += `<div class="text-xs text-gray-500 mb-1">Canal ${ch + 1}</div>`;
+        html += `<div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Canal ${ch + 1}</div>`;
         html += `<div class="flex flex-wrap gap-1">`;
         for (let s = 0; s < displaySamples; s++) {
             html += `<div class="sample-dot" title="Canal ${ch + 1}, Échantillon ${s + 1}"></div>`;
         }
         if (state.samplesPerPacket > displaySamples) {
-            html += `<span class="text-xs text-gray-500 ml-2">... +${state.samplesPerPacket - displaySamples} échantillons</span>`;
+            html += `<span class="text-xs text-gray-500 dark:text-gray-400 ml-2">... +${state.samplesPerPacket - displaySamples}</span>`;
         }
         html += `</div></div>`;
     }
 
     if (state.channels > displayChannels) {
-        html += `<div class="text-sm text-gray-500 mt-2">... +${state.channels - displayChannels} canaux supplémentaires</div>`;
+        html += `<div class="text-sm text-gray-500 dark:text-gray-400 mt-2">... +${state.channels - displayChannels} canaux</div>`;
     }
 
     container.innerHTML = html;
@@ -215,26 +213,23 @@ export function updateNetworkLoad(results) {
 
     if (state.samplesPerPacket < 128) {
         analysis += `
-            <p class="text-orange-600">
-                💡 Vous utilisez des paquets très petits (${state.samplesPerPacket} échantillons),
-                ce qui génère <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>.
-                Cela augmente la charge CPU et le nombre d'interruptions réseau,
-                mais minimise la latence.
+            <p class="text-orange-600 dark:text-orange-400">
+                💡 Paquets petits (${state.samplesPerPacket} échantillons) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Plus de charge CPU mais latence minimale.
             </p>
         `;
     } else if (state.samplesPerPacket > 512) {
         analysis += `
-            <p class="text-blue-600">
-                💡 Vous utilisez de gros paquets (${state.samplesPerPacket} échantillons),
-                ce qui ne génère que <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>.
-                C'est très efficace pour le réseau, mais augmente la latence de paquetisation.
+            <p class="text-blue-600 dark:text-blue-400">
+                💡 Gros paquets (${state.samplesPerPacket} échantillons) = <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Efficace réseau mais latence accrue.
             </p>
         `;
     } else {
         analysis += `
-            <p class="text-green-600">
-                ✅ Configuration équilibrée : <strong>${Math.round(packetsPerSecond)} paquets/seconde</strong>
-                est un bon compromis entre latence et charge réseau.
+            <p class="text-green-600 dark:text-green-400">
+                ✅ Équilibré : <strong>${Math.round(packetsPerSecond)} pps</strong>.
+                Bon compromis latence/efficacité.
             </p>
         `;
     }
@@ -243,11 +238,8 @@ export function updateNetworkLoad(results) {
     const percentUsed = (bandwidth / gigabitCapacity) * 100;
 
     analysis += `
-        <p class="mt-2 text-sm text-gray-600">
-            Sur un réseau Gigabit (1000 Mbps), ce flux représente
-            <strong>${percentUsed.toFixed(3)}%</strong> de la capacité totale.
-            ${state.channels >= 32 ? 'Avec autant de canaux, veillez à ne pas saturer le réseau avec de multiples flux.' :
-              'Vous pouvez facilement transporter plusieurs flux similaires sur le même réseau.'}
+        <p class="mt-2 text-xs">
+            Sur Gigabit : <strong>${percentUsed.toFixed(2)}%</strong> de capacité utilisée.
         </p>
     `;
 
