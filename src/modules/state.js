@@ -1,10 +1,10 @@
 /**
- * State Management - Gestion de l'état de l'application
+ * State Management - Application state management
  * @module state
  */
 
 /**
- * État global de l'application
+ * Global application state
  */
 export const state = {
     protocol: 'aes67',
@@ -18,19 +18,19 @@ export const state = {
 };
 
 /**
- * Constantes réseau (tailles en octets)
+ * Network constants (sizes in bytes)
  */
 export const SIZES = {
-    ethernet: 14,      // En-tête Ethernet
+    ethernet: 14,      // Ethernet header
     fcs: 4,            // Frame Check Sequence (Ethernet)
-    ip: 20,            // En-tête IPv4
-    udp: 8,            // En-tête UDP
-    rtp: 12,           // En-tête RTP (uniquement AES67)
-    mtu: 1518          // MTU Ethernet standard
+    ip: 20,            // IPv4 header
+    udp: 8,            // UDP header
+    rtp: 12,           // RTP header (AES67 only)
+    mtu: 1518          // Standard Ethernet MTU
 };
 
 /**
- * Configuration des ports par protocole
+ * Protocol port configuration
  */
 export const PROTOCOL_PORTS = {
     aes67: 'RTP 5004',
