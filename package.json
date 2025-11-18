@@ -1,10 +1,11 @@
 {
   "name": "audio-network-visualizer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Visualisateur pédagogique de stacks réseau audio Dante & AES67",
   "type": "module",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=23.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "dev": "vite",

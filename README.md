@@ -19,7 +19,7 @@ Démystifier la manière dont l'audio est transporté sur un réseau IP en perme
 - **Minification** : Terser avec obfuscation
 - **Compression** : Gzip + Brotli
 - **Déploiement** : Cloudflare Pages
-- **Node.js** : >= 20.0.0
+- **Node.js** : >= 23.0.0 (dernière version LTS)
 
 ## 📦 Installation
 
@@ -72,10 +72,16 @@ Le build de production inclut :
 2. Allez dans **Pages** > **Create a project**
 3. Connectez votre repository Git
 4. Configurez le build :
+   - **Framework preset** : None (ou Vite)
    - **Build command** : `npm run build`
    - **Build output directory** : `dist`
-   - **Node version** : `20`
-5. Cliquez sur **Save and Deploy**
+   - **Node version** : `23` (ou latest)
+   - **Root directory** : `/` (racine du repo)
+5. Variables d'environnement (optionnel) :
+   - `NODE_VERSION=23`
+6. Cliquez sur **Save and Deploy**
+
+**Important** : Assurez-vous de déployer depuis la branche `claude/audio-network-visualizer-019F6xgvPPLa5nKc1h587Wws` ou `main` (après merge) et PAS depuis le commit initial 448c87f qui ne contient que l'ancien fichier HTML unique.
 
 ### Option 2 : Via Wrangler CLI
 
