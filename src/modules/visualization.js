@@ -21,23 +21,23 @@ export function updatePacketVisualization(results) {
 
     const layers = [
         {
-            name: 'Trame Ethernet',
+            name: 'Ethernet Frame',
             size: ethernetSize + fcsSize,
-            color: 'from-gray-400 to-gray-500',
+            color: 'from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700',
             indent: 0,
-            description: `En-tête (${ethernetSize} o) + FCS (${fcsSize} o)`
+            description: `Header (${ethernetSize} B) + FCS (${fcsSize} B)`
         },
         {
-            name: 'En-tête IP',
+            name: 'IP Header',
             size: ipSize,
-            color: 'from-blue-400 to-blue-500',
+            color: 'from-blue-300 to-blue-400 dark:from-blue-700 dark:to-blue-800',
             indent: 1,
             description: 'IPv4'
         },
         {
-            name: 'En-tête UDP',
+            name: 'UDP Header',
             size: udpSize,
-            color: 'from-green-400 to-green-500',
+            color: 'from-emerald-300 to-emerald-400 dark:from-emerald-700 dark:to-emerald-800',
             indent: 2,
             description: 'Transport'
         }
@@ -45,34 +45,34 @@ export function updatePacketVisualization(results) {
 
     if (state.protocol === 'aes67') {
         layers.push({
-            name: 'En-tête RTP',
+            name: 'RTP Header',
             size: rtpSize,
-            color: 'from-yellow-400 to-yellow-500',
+            color: 'from-amber-300 to-amber-400 dark:from-amber-700 dark:to-amber-800',
             indent: 3,
             description: 'Real-time Transport Protocol'
         });
     }
 
     layers.push({
-        name: 'Payload Audio (Données Utiles)',
+        name: 'Audio Payload (Useful Data)',
         size: payloadSize,
-        color: 'from-purple-500 to-pink-500',
+        color: 'from-violet-300 to-violet-400 dark:from-violet-700 dark:to-violet-800',
         indent: state.protocol === 'aes67' ? 4 : 3,
-        description: `${state.channels} canaux × ${state.samplesPerPacket} échantillons × ${state.bitDepth} bits`,
+        description: `${state.channels} channels × ${state.samplesPerPacket} samples × ${state.bitDepth} bits`,
         highlight: true
     });
 
     container.innerHTML = layers.map(layer => `
         <div class="packet-layer flex items-center" style="margin-left: ${layer.indent * 20}px">
-            <div class="flex-1 bg-gradient-to-r ${layer.color} text-white p-4 rounded-lg shadow-md ${layer.highlight ? 'border-4 border-yellow-300' : ''}">
+            <div class="flex-1 bg-gradient-to-r ${layer.color} text-gray-800 dark:text-gray-100 p-4 rounded-lg shadow-sm ${layer.highlight ? 'border-2 border-violet-400 dark:border-violet-500' : ''}">
                 <div class="flex justify-between items-center">
                     <div>
-                        <div class="font-semibold text-lg">${layer.name}</div>
-                        <div class="text-sm opacity-90">${layer.description}</div>
+                        <div class="font-semibold text-base">${layer.name}</div>
+                        <div class="text-sm opacity-75">${layer.description}</div>
                     </div>
-                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
-                        <span class="font-bold text-xl">${layer.size}</span>
-                        <span class="text-sm ml-1">octets</span>
+                    <div class="bg-gray-800 dark:bg-gray-200 bg-opacity-10 dark:bg-opacity-20 px-3 py-1.5 rounded">
+                        <span class="font-bold text-lg">${layer.size}</span>
+                        <span class="text-xs ml-1">bytes</span>
                     </div>
                 </div>
             </div>
@@ -80,20 +80,20 @@ export function updatePacketVisualization(results) {
     `).join('');
 
     container.innerHTML += `
-        <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg border-2 border-gray-400 dark:border-gray-600 transition-colors">
+        <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 transition-colors">
             <div class="flex justify-between items-center">
-                <div class="font-bold text-gray-800 dark:text-gray-200">
-                    TAILLE TOTALE (L2)
+                <div class="font-semibold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wide">
+                    Total Size (L2)
                 </div>
                 <div>
-                    <span class="text-2xl font-bold ${mtuExceeded ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">
+                    <span class="text-xl font-bold ${mtuExceeded ? 'text-red-500 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}">
                         ${totalPacketSize}
                     </span>
-                    <span class="text-gray-600 dark:text-gray-400 ml-1">o</span>
+                    <span class="text-gray-500 dark:text-gray-400 ml-1 text-sm">bytes</span>
                 </div>
             </div>
             <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Efficacité : <strong>${efficiency.toFixed(1)}%</strong> de données utiles
+                Efficiency: <strong class="text-gray-700 dark:text-gray-300">${efficiency.toFixed(1)}%</strong> useful data
             </div>
         </div>
     `;
@@ -111,13 +111,13 @@ export function updatePayloadVisualization(payloadSize) {
     const infoDiv = document.getElementById('payload-info');
 
     infoDiv.innerHTML = `
-        <p class="font-semibold">
-            Ce paquet transporte <span class="text-blue-600 dark:text-blue-400 text-lg">${state.samplesPerPacket}</span>
-            échantillons pour <span class="text-blue-600 dark:text-blue-400 text-lg">${state.channels}</span>
-            ${state.channels > 1 ? 'canaux' : 'canal'}.
+        <p class="font-medium text-gray-700 dark:text-gray-300">
+            This packet carries <span class="text-violet-600 dark:text-violet-400 font-semibold">${state.samplesPerPacket}</span>
+            samples for <span class="text-violet-600 dark:text-violet-400 font-semibold">${state.channels}</span>
+            ${state.channels > 1 ? 'channels' : 'channel'}.
         </p>
-        <p class="text-sm mt-1">
-            Taille : <strong>${payloadSize} octets</strong>
+        <p class="text-sm mt-1 text-gray-600 dark:text-gray-400">
+            Size: <strong class="text-gray-700 dark:text-gray-300">${payloadSize} bytes</strong>
         </p>
     `;
 
@@ -127,19 +127,19 @@ export function updatePayloadVisualization(payloadSize) {
     let html = '';
     for (let ch = 0; ch < displayChannels; ch++) {
         html += `<div class="mb-2">`;
-        html += `<div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Canal ${ch + 1}</div>`;
+        html += `<div class="text-xs text-gray-500 dark:text-gray-500 mb-1 font-medium">Channel ${ch + 1}</div>`;
         html += `<div class="flex flex-wrap gap-1">`;
         for (let s = 0; s < displaySamples; s++) {
-            html += `<div class="sample-dot" title="Canal ${ch + 1}, Échantillon ${s + 1}"></div>`;
+            html += `<div class="sample-dot" title="Channel ${ch + 1}, Sample ${s + 1}"></div>`;
         }
         if (state.samplesPerPacket > displaySamples) {
-            html += `<span class="text-xs text-gray-500 dark:text-gray-400 ml-2">... +${state.samplesPerPacket - displaySamples}</span>`;
+            html += `<span class="text-xs text-gray-500 dark:text-gray-500 ml-2">... +${state.samplesPerPacket - displaySamples}</span>`;
         }
         html += `</div></div>`;
     }
 
     if (state.channels > displayChannels) {
-        html += `<div class="text-sm text-gray-500 dark:text-gray-400 mt-2">... +${state.channels - displayChannels} canaux</div>`;
+        html += `<div class="text-sm text-gray-500 dark:text-gray-500 mt-2">... +${state.channels - displayChannels} channels</div>`;
     }
 
     container.innerHTML = html;
@@ -193,8 +193,8 @@ export function updateLatencyVisualization(results) {
 }
 
 /**
- * Met à jour l'affichage de la charge réseau
- * @param {Object} results - Résultats des calculs
+ * Updates network load display
+ * @param {Object} results - Calculation results
  */
 export function updateNetworkLoad(results) {
     const { packetsPerSecond, bandwidth } = results;
@@ -246,7 +246,7 @@ export function updateNetworkLoad(results) {
 }
 
 /**
- * Met à jour l'affichage du port selon le protocole
+ * Updates port display according to protocol
  */
 export function updatePortInfo() {
     const portDisplay = document.getElementById('port-display');
@@ -254,8 +254,8 @@ export function updatePortInfo() {
 }
 
 /**
- * Met à jour toute l'interface avec les nouveaux résultats
- * @param {Object} results - Résultats des calculs
+ * Updates entire interface with new results
+ * @param {Object} results - Calculation results
  */
 export function updateUI(results) {
     updatePacketVisualization(results);

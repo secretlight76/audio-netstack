@@ -21,12 +21,12 @@
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-1 h-12 bg-blue-600 dark:bg-blue-500 rounded"></div>
+                        <div class="w-1 h-12 bg-slate-400 dark:bg-slate-500 rounded"></div>
                         <div>
-                            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+                            <h1 class="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-200 tracking-tight">
                                 Audio Network Stack Analyzer
                             </h1>
-                            <h2 class="text-sm lg:text-base font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mt-1">Dante & AES67 Protocol Visualization</h2>
+                            <h2 class="text-sm lg:text-base font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Dante & AES67 Protocol Visualization</h2>
                         </div>
                     </div>
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed ml-4">
@@ -90,19 +90,19 @@
                     <div class="flex gap-3">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="protocol" value="aes67" checked class="peer sr-only">
-                            <div class="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 border-2 border-blue-300 dark:border-gray-600 rounded-lg peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-600 dark:peer-checked:bg-blue-600 font-medium transition-all">
+                            <div class="px-4 py-3 text-center bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg peer-checked:bg-slate-600 peer-checked:text-white peer-checked:border-slate-600 dark:peer-checked:bg-slate-500 font-medium transition-all text-gray-700 dark:text-gray-300">
                                 AES67
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="protocol" value="dante" class="peer sr-only">
-                            <div class="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 border-2 border-blue-300 dark:border-gray-600 rounded-lg peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-600 dark:peer-checked:bg-blue-600 font-medium transition-all">
+                            <div class="px-4 py-3 text-center bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg peer-checked:bg-slate-600 peer-checked:text-white peer-checked:border-slate-600 dark:peer-checked:bg-slate-500 font-medium transition-all text-gray-700 dark:text-gray-300">
                                 Dante
                             </div>
                         </label>
                     </div>
                     <div class="mt-3 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        Port: <span id="port-display" class="font-mono font-semibold text-blue-600 dark:text-blue-400">RTP 5004</span>
+                        Port: <span id="port-display" class="font-mono font-semibold text-slate-600 dark:text-slate-400">RTP 5004</span>
                     </div>
                 </div>
 
@@ -128,7 +128,7 @@
                                 </span>
                             </span>
                         </label>
-                        <select id="sample-rate" class="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-2.5 focus:border-blue-500 focus:outline-none transition-colors">
+                        <select id="sample-rate" class="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-2.5 focus:border-slate-400 focus:outline-none transition-colors">
                             <option value="44100">44.1 kHz</option>
                             <option value="48000" selected>48 kHz</option>
                             <option value="96000">96 kHz</option>
@@ -151,7 +151,7 @@
                                 </span>
                             </span>
                         </label>
-                        <select id="bit-depth" class="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-2.5 focus:border-blue-500 focus:outline-none transition-colors">
+                        <select id="bit-depth" class="w-full border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg p-2.5 focus:border-slate-400 focus:outline-none transition-colors">
                             <option value="16">16 bits</option>
                             <option value="24" selected>24 bits</option>
                             <option value="32">32 bits</option>
@@ -162,7 +162,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Channel Count: <span id="channels-value" class="font-bold text-blue-600 dark:text-blue-400 text-lg">8</span>
+                                Channel Count: <span id="channels-value" class="font-semibold text-slate-600 dark:text-slate-400">8</span>
                                 <span class="tooltiptext">
                                     Number of audio streams in a packet.
                                     <br><br>
@@ -183,12 +183,12 @@
                 </div>
 
                 <!-- Packetization (CRITICAL) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-l-4 border-l-blue-500 dark:border-l-blue-400 border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border-l-4 border-l-slate-400 dark:border-l-slate-500 border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">
                             Packetization
                         </h3>
-                        <span class="text-xs font-mono text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">CRITICAL</span>
+                        <span class="text-xs font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">CRITICAL</span>
                     </div>
 
                     <div>
@@ -212,7 +212,7 @@
                         <!-- Numeric input for direct entry -->
                         <div class="mb-3">
                             <input type="number" id="samples-input" min="6" max="1024" value="128" step="1"
-                                   class="w-full text-center text-xl font-mono font-semibold border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg p-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all">
+                                   class="w-full text-center text-xl font-mono font-semibold border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg p-2.5 focus:border-slate-400 focus:ring-1 focus:ring-slate-300 dark:focus:ring-slate-500 focus:outline-none transition-all">
                             <div class="text-xs text-gray-500 dark:text-gray-500 text-center mt-1 font-mono">
                                 Range: 6-1024 samples/packet
                             </div>
@@ -239,7 +239,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Network Switches: <span id="hops-value" class="font-bold text-blue-600 dark:text-blue-400">3</span>
+                                Network Switches: <span id="hops-value" class="font-semibold text-slate-600 dark:text-slate-400">3</span>
                                 <span class="tooltiptext">
                                     Number of network devices traversed.
                                     <br><br>
@@ -258,7 +258,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                TX Buffer: <span id="tx-buffer-value" class="font-bold text-blue-600 dark:text-blue-400">1.0 ms</span>
+                                TX Buffer: <span id="tx-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">1.0 ms</span>
                                 <span class="tooltiptext">
                                     Delay before network transmission.
                                     <br><br>
@@ -277,7 +277,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span class="tooltip">
-                                Jitter Buffer: <span id="jitter-buffer-value" class="font-bold text-blue-600 dark:text-blue-400">5 ms</span>
+                                Jitter Buffer: <span id="jitter-buffer-value" class="font-semibold text-slate-600 dark:text-slate-400">5 ms</span>
                                 <span class="tooltiptext">
                                     Compensates for network delay variations (jitter).
                                     <br><br>
@@ -359,10 +359,10 @@
                                         Formula: (Samples / Rate) × 1000
                                     </span>
                                 </span>
-                                <span id="latency-packetization" class="text-sm font-bold text-yellow-600 dark:text-yellow-400"></span>
+                                <span id="latency-packetization" class="text-sm font-semibold text-amber-600 dark:text-amber-400"></span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
-                                <div id="latency-packetization-bar" class="bg-yellow-500 dark:bg-yellow-600 h-full transition-all duration-300"></div>
+                                <div id="latency-packetization-bar" class="bg-amber-400 dark:bg-amber-600 h-full transition-all duration-300"></div>
                             </div>
                         </div>
 
@@ -370,10 +370,10 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Buffer TX</span>
-                                <span id="latency-tx" class="text-sm font-bold text-blue-600 dark:text-blue-400"></span>
+                                <span id="latency-tx" class="text-sm font-semibold text-sky-600 dark:text-sky-400"></span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
-                                <div id="latency-tx-bar" class="bg-blue-500 dark:bg-blue-600 h-full transition-all duration-300"></div>
+                                <div id="latency-tx-bar" class="bg-sky-400 dark:bg-sky-600 h-full transition-all duration-300"></div>
                             </div>
                         </div>
 
@@ -381,10 +381,10 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Network</span>
-                                <span id="latency-network" class="text-sm font-bold text-green-600 dark:text-green-400"></span>
+                                <span id="latency-network" class="text-sm font-semibold text-teal-600 dark:text-teal-400"></span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
-                                <div id="latency-network-bar" class="bg-green-500 dark:bg-green-600 h-full transition-all duration-300"></div>
+                                <div id="latency-network-bar" class="bg-teal-400 dark:bg-teal-600 h-full transition-all duration-300"></div>
                             </div>
                         </div>
 
@@ -392,21 +392,21 @@
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Jitter Buffer</span>
-                                <span id="latency-jitter" class="text-sm font-bold text-purple-600 dark:text-purple-400"></span>
+                                <span id="latency-jitter" class="text-sm font-semibold text-violet-600 dark:text-violet-400"></span>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
-                                <div id="latency-jitter-bar" class="bg-purple-500 dark:bg-purple-600 h-full transition-all duration-300"></div>
+                                <div id="latency-jitter-bar" class="bg-violet-400 dark:bg-violet-600 h-full transition-all duration-300"></div>
                             </div>
                         </div>
 
                         <!-- Total -->
                         <div class="border-t-2 border-gray-300 dark:border-gray-600 pt-3 mt-4">
                             <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm font-bold text-gray-800 dark:text-gray-200">TOTAL</span>
-                                <span id="latency-total" class="text-2xl font-bold text-red-600 dark:text-red-400"></span>
+                                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">TOTAL</span>
+                                <span id="latency-total" class="text-xl font-bold text-slate-700 dark:text-slate-300"></span>
                             </div>
                             <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-8 overflow-hidden">
-                                <div id="latency-total-bar" class="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 h-full transition-all duration-300"></div>
+                                <div id="latency-total-bar" class="bg-gradient-to-r from-slate-400 to-slate-500 dark:from-slate-600 dark:to-slate-700 h-full transition-all duration-300"></div>
                             </div>
                         </div>
                     </div>
@@ -418,26 +418,26 @@
                         Network Load
                     </h3>
                     <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors">
                             <div class="text-xs text-gray-600 dark:text-gray-400 mb-1 tooltip">
                                 Packets/s
                                 <span class="tooltiptext">
                                     Formula: Rate / Samples
                                 </span>
                             </div>
-                            <div id="pps" class="text-2xl font-bold text-purple-600 dark:text-purple-400"></div>
+                            <div id="pps" class="text-xl font-bold text-slate-700 dark:text-slate-300"></div>
                         </div>
-                        <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-colors">
                             <div class="text-xs text-gray-600 dark:text-gray-400 mb-1 tooltip">
                                 Bandwidth
                                 <span class="tooltiptext">
                                     Total throughput in Mbps
                                 </span>
                             </div>
-                            <div id="bandwidth" class="text-2xl font-bold text-pink-600 dark:text-pink-400"></div>
+                            <div id="bandwidth" class="text-xl font-bold text-slate-700 dark:text-slate-300"></div>
                         </div>
                     </div>
-                    <div id="network-analysis" class="p-4 bg-white dark:bg-gray-700 rounded-lg text-xs text-gray-700 dark:text-gray-300 leading-relaxed transition-colors">
+                    <div id="network-analysis" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-xs text-gray-700 dark:text-gray-300 leading-relaxed transition-colors">
                         <!-- Dynamic analysis -->
                     </div>
                 </div>
@@ -462,7 +462,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Concept 1 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Packetization Process
                     </h3>
@@ -473,7 +473,7 @@
                 </div>
 
                 <!-- Concept 2 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Latency Components
                     </h3>
@@ -484,7 +484,7 @@
                 </div>
 
                 <!-- Concept 3 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Performance Trade-offs
                     </h3>
@@ -495,7 +495,7 @@
                 </div>
 
                 <!-- Concept 4 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Protocol Comparison
                     </h3>
@@ -506,7 +506,7 @@
                 </div>
 
                 <!-- Concept 5 -->
-                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-blue-500">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded border-l-2 border-slate-400 dark:border-slate-500">
                     <h3 class="font-semibold text-sm text-gray-900 dark:text-white mb-2">
                         Bandwidth Calculation
                     </h3>
