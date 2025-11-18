@@ -158,7 +158,13 @@ function updateLatencyBar(type, value, total, maxWidth) {
 
     const width = (value / total) * maxWidth;
     bar.style.width = `${width}%`;
-    text.textContent = `${value.toFixed(2)} ms`;
+
+    // Display in microseconds if less than 1ms, otherwise in milliseconds
+    if (type === 'total' && value < 1) {
+        text.textContent = `${(value * 1000).toFixed(0)} µs`;
+    } else {
+        text.textContent = `${value.toFixed(2)} ms`;
+    }
 }
 
 /**
