@@ -26,29 +26,29 @@ function updateRecommendations(results) {
 
     // Recommandation sur la paquetisation
     if (state.samplesPerPacket < 64) {
-        recommendations.push('✅ <strong>Latence ultra-faible</strong> avec ' + state.samplesPerPacket + ' échantillons. Parfait pour le live monitoring.');
+        recommendations.push('[OK] <strong>Ultra-low latency</strong> with ' + state.samplesPerPacket + ' samples. Optimal for live monitoring.');
     } else if (state.samplesPerPacket > 512) {
-        recommendations.push('⚠️ Latence élevée (' + results.packetizationLatency.toFixed(2) + ' ms). Réduisez les échantillons pour le live.');
+        recommendations.push('[WARN] High latency (' + results.packetizationLatency.toFixed(2) + ' ms). Reduce samples for live applications.');
     } else {
-        recommendations.push('✅ Bon compromis latence/efficacité avec ' + state.samplesPerPacket + ' échantillons.');
+        recommendations.push('[OK] Balanced latency/efficiency trade-off with ' + state.samplesPerPacket + ' samples.');
     }
 
     // Recommandation sur le jitter buffer
     if (state.jitterBuffer > 20) {
-        recommendations.push('💡 Jitter buffer élevé (' + state.jitterBuffer + ' ms). Vérifiez si vous pouvez le réduire sur votre réseau.');
+        recommendations.push('[INFO] High jitter buffer (' + state.jitterBuffer + ' ms). Consider reducing if network is stable.');
     }
 
     // Recommandation sur la bande passante
     const percentBandwidth = (results.bandwidth / 1000) * 100;
     if (percentBandwidth > 1) {
-        recommendations.push('⚠️ Utilise ' + percentBandwidth.toFixed(1) + '% d\'un réseau Gigabit. Attention si vous multipliez les flux.');
+        recommendations.push('[WARN] Using ' + percentBandwidth.toFixed(1) + '% of Gigabit capacity. Monitor when multiplexing streams.');
     } else {
-        recommendations.push('✅ Bande passante optimale (' + results.bandwidth.toFixed(2) + ' Mbps). Vous pouvez transporter plusieurs flux.');
+        recommendations.push('[OK] Optimal bandwidth (' + results.bandwidth.toFixed(2) + ' Mbps). Multiple streams feasible.');
     }
 
     // Recommandation MTU
     if (results.mtuExceeded) {
-        recommendations.push('🔴 <strong>Paquet trop gros !</strong> Risque de fragmentation. Réduisez canaux ou échantillons.');
+        recommendations.push('[ERROR] <strong>Packet oversized!</strong> Fragmentation risk. Reduce channels or samples.');
     }
 
     container.innerHTML = recommendations.map(r => `<div class="flex items-start gap-2"><span class="flex-shrink-0">•</span><span>${r}</span></div>`).join('');
