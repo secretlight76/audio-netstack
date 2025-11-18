@@ -2,10 +2,5 @@
   "$schema": "https://developers.cloudflare.com/pages/framework-presets/schema.json",
   "buildCommand": "npm install && npm run build",
   "buildOutputDirectory": "dist",
-  "nodeVersion": "23",
-  "installCommand": "npm ci --no-audit --prefer-offline || npm install",
-  "compatibility_date": "2024-01-01",
-  "build": {
-    "rootDirectory": ""
-  }
+  "nodeVersion": "23"
 }
