@@ -109,11 +109,32 @@ function initializeEventListeners() {
         calculate();
     });
 
-    // Échantillons par paquet (SLIDER au lieu de select)
-    document.getElementById('samples-per-packet').addEventListener('input', (e) => {
-        state.samplesPerPacket = parseInt(e.target.value);
-        document.getElementById('samples-value').textContent = state.samplesPerPacket;
+    // Échantillons par paquet - Synchronisation slider et input
+    const samplesSlider = document.getElementById('samples-per-packet');
+    const samplesInput = document.getElementById('samples-input');
+
+    // Fonction de mise à jour des échantillons
+    function updateSamples(value) {
+        const samples = Math.max(6, Math.min(1024, parseInt(value)));
+        state.samplesPerPacket = samples;
+        samplesSlider.value = samples;
+        samplesInput.value = samples;
         calculate();
+    }
+
+    samplesSlider.addEventListener('input', (e) => {
+        updateSamples(e.target.value);
+    });
+
+    samplesInput.addEventListener('input', (e) => {
+        updateSamples(e.target.value);
+    });
+
+    // Validation sur blur pour corriger les valeurs hors limites
+    samplesInput.addEventListener('blur', (e) => {
+        if (e.target.value < 6) e.target.value = 6;
+        if (e.target.value > 1024) e.target.value = 1024;
+        updateSamples(e.target.value);
     });
 
     // Nombre de sauts
