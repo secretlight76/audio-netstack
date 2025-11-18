@@ -118,6 +118,21 @@ export function performAllCalculations() {
     const packetsPerSecond = calculatePacketsPerSecond();
     const bandwidth = calculateBandwidth(totalPacketSize, packetsPerSecond);
 
+    // Network capacity calculations
+    const gigabitCapacity = 1000; // Mbps
+    const maxStreams = Math.floor(gigabitCapacity / bandwidth);
+    const recommendedStreams = Math.floor(maxStreams * 0.8); // 80% utilization
+
+    // Overhead breakdown
+    const overheadBreakdown = {
+        ethernet: SIZES.ethernet + SIZES.fcs,
+        ip: SIZES.ip,
+        udp: SIZES.udp,
+        rtp: state.protocol === 'aes67' ? SIZES.rtp : 0,
+        payload: payloadSize,
+        totalHeaders: headerSize + SIZES.fcs
+    };
+
     return {
         payloadSize,
         headerSize,
@@ -128,6 +143,9 @@ export function performAllCalculations() {
         networkLatency,
         totalLatency,
         packetsPerSecond,
-        bandwidth
+        bandwidth,
+        maxStreams,
+        recommendedStreams,
+        overheadBreakdown
     };
 }

@@ -260,6 +260,170 @@ export function updatePortInfo() {
 }
 
 /**
+ * Updates overhead visualization
+ * @param {Object} overheadBreakdown - Breakdown of overhead components
+ * @param {number} totalPacketSize - Total packet size
+ */
+export function updateOverheadVisualization(overheadBreakdown, totalPacketSize) {
+    const container = document.getElementById('overhead-visualization');
+
+    const components = [
+        { name: 'Audio Payload', size: overheadBreakdown.payload, color: 'bg-violet-500 dark:bg-violet-600' },
+        { name: 'Ethernet + FCS', size: overheadBreakdown.ethernet, color: 'bg-slate-400 dark:bg-slate-600' },
+        { name: 'IP Header', size: overheadBreakdown.ip, color: 'bg-blue-400 dark:bg-blue-700' },
+        { name: 'UDP Header', size: overheadBreakdown.udp, color: 'bg-emerald-400 dark:bg-emerald-700' }
+    ];
+
+    if (overheadBreakdown.rtp > 0) {
+        components.push({
+            name: 'RTP Header',
+            size: overheadBreakdown.rtp,
+            color: 'bg-amber-400 dark:bg-amber-700'
+        });
+    }
+
+    let html = '<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-8 flex overflow-hidden mb-3">';
+
+    components.forEach(comp => {
+        const percentage = (comp.size / totalPacketSize) * 100;
+        html += `<div class="${comp.color} flex items-center justify-center text-xs font-semibold text-white"
+                     style="width: ${percentage}%;"
+                     title="${comp.name}: ${comp.size}B (${percentage.toFixed(1)}%)">
+                     ${percentage > 8 ? comp.size + 'B' : ''}
+                 </div>`;
+    });
+
+    html += '</div><div class="space-y-1">';
+
+    components.forEach(comp => {
+        const percentage = (comp.size / totalPacketSize) * 100;
+        html += `<div class="flex items-center justify-between text-xs">
+                     <div class="flex items-center gap-2">
+                         <div class="w-3 h-3 rounded ${comp.color}"></div>
+                         <span class="text-gray-700 dark:text-gray-300">${comp.name}</span>
+                     </div>
+                     <span class="font-mono text-gray-600 dark:text-gray-400">${comp.size}B (${percentage.toFixed(1)}%)</span>
+                 </div>`;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+/**
+ * Updates network capacity display
+ * @param {number} bandwidth - Current stream bandwidth
+ * @param {number} maxStreams - Maximum concurrent streams
+ * @param {number} recommendedStreams - Recommended streams (80%)
+ */
+export function updateNetworkCapacity(bandwidth, maxStreams, recommendedStreams) {
+    const container = document.getElementById('network-capacity');
+
+    const utilizationPercent = (bandwidth / 1000) * 100;
+
+    let html = `
+        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">This Stream Uses</div>
+            <div class="text-2xl font-bold text-slate-700 dark:text-slate-300">${bandwidth.toFixed(2)} Mbps</div>
+            <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">${utilizationPercent.toFixed(3)}% of 1 Gbps</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">Max Streams</div>
+                <div class="text-xl font-bold text-slate-700 dark:text-slate-300">${maxStreams}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-500">100% capacity</div>
+            </div>
+            <div class="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                <div class="text-xs text-emerald-700 dark:text-emerald-400 mb-1">Recommended</div>
+                <div class="text-xl font-bold text-emerald-700 dark:text-emerald-400">${recommendedStreams}</div>
+                <div class="text-xs text-emerald-600 dark:text-emerald-500">80% capacity</div>
+            </div>
+        </div>
+
+        <div class="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded">
+            <strong>Note:</strong> Leaving 20% headroom allows for control traffic,
+            PTP synchronization, and network overhead.
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+/**
+ * Updates packet loss impact display
+ * @param {number} packetsPerSecond - Current PPS
+ * @param {number} packetizationLatency - Latency per packet in ms
+ */
+export function updatePacketLossImpact(packetsPerSecond, packetizationLatency) {
+    const container = document.getElementById('packet-loss-impact');
+    const lossRate = state.packetLoss;
+
+    if (lossRate === 0) {
+        container.innerHTML = `
+            <div class="text-center py-4 text-gray-500 dark:text-gray-500">
+                <div class="mb-2">✓ Perfect network - No packet loss</div>
+                <div class="text-xs">Adjust the slider above to simulate packet loss</div>
+            </div>
+        `;
+        return;
+    }
+
+    const packetsLostPerSecond = (packetsPerSecond * lossRate) / 100;
+    const audioLostPerSecond = packetsLostPerSecond * packetizationLatency;
+    const timeBetweenLosses = lossRate > 0 ? 1 / packetsLostPerSecond : Infinity;
+
+    let severity = 'low';
+    let severityColor = 'amber';
+    let severityText = 'Noticeable';
+
+    if (lossRate >= 1) {
+        severity = 'high';
+        severityColor = 'red';
+        severityText = 'Severe';
+    } else if (lossRate >= 0.5) {
+        severity = 'medium';
+        severityColor = 'orange';
+        severityText = 'Significant';
+    }
+
+    let html = `
+        <div class="bg-${severityColor}-50 dark:bg-${severityColor}-900/20 border border-${severityColor}-200 dark:border-${severityColor}-800 p-3 rounded-lg mb-3">
+            <div class="font-semibold text-sm text-${severityColor}-800 dark:text-${severityColor}-400 mb-1">
+                ${severityText} Impact
+            </div>
+            <div class="text-xs text-${severityColor}-700 dark:text-${severityColor}-400">
+                ${lossRate}% loss rate will cause audible artifacts
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                <span class="text-gray-600 dark:text-gray-400">Packets lost per second:</span>
+                <span class="font-mono font-semibold text-gray-800 dark:text-gray-200">${packetsLostPerSecond.toFixed(2)}</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <span class="text-gray-600 dark:text-gray-400">Audio lost per second:</span>
+                <span class="font-mono font-semibold text-gray-800 dark:text-gray-200">${audioLostPerSecond.toFixed(2)} ms</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <span class="text-gray-600 dark:text-gray-400">Avg time between losses:</span>
+                <span class="font-mono font-semibold text-gray-800 dark:text-gray-200">${timeBetweenLosses.toFixed(2)} s</span>
+            </div>
+        </div>
+
+        <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-400">
+            Each lost packet = <strong>${packetizationLatency.toFixed(2)} ms</strong> of missing audio
+            (${state.samplesPerPacket} samples × ${state.channels} channels)
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+/**
  * Updates entire interface with new results
  * @param {Object} results - Calculation results
  */
@@ -268,4 +432,7 @@ export function updateUI(results) {
     updatePayloadVisualization(results.payloadSize);
     updateLatencyVisualization(results);
     updateNetworkLoad(results);
+    updateOverheadVisualization(results.overheadBreakdown, results.totalPacketSize);
+    updateNetworkCapacity(results.bandwidth, results.maxStreams, results.recommendedStreams);
+    updatePacketLossImpact(results.packetsPerSecond, results.packetizationLatency);
 }

@@ -171,6 +171,13 @@ function initializeEventListeners() {
         document.getElementById('jitter-buffer-value').textContent = state.jitterBuffer + ' ms';
         calculate();
     });
+
+    // Packet Loss
+    document.getElementById('packet-loss').addEventListener('input', (e) => {
+        state.packetLoss = parseFloat(e.target.value);
+        document.getElementById('packet-loss-value').textContent = state.packetLoss.toFixed(1) + '%';
+        calculate();
+    });
 }
 
 /**

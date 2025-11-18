@@ -470,6 +470,67 @@
                         <!-- Generated dynamically -->
                     </div>
                 </div>
+
+                <!-- Overhead Breakdown -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                        <span class="tooltip">
+                            Overhead Analysis
+                            <span class="tooltiptext">
+                                Shows how much of each packet is useful data vs network headers.
+                                <br><br>
+                                Lower overhead = better efficiency
+                            </span>
+                        </span>
+                    </h3>
+                    <div id="overhead-visualization" class="space-y-2">
+                        <!-- Generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Network Capacity -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                        <span class="tooltip">
+                            Network Capacity @ 1 Gbps
+                            <span class="tooltiptext">
+                                Maximum number of identical streams on a Gigabit network.
+                                <br><br>
+                                Recommended: 80% max utilization for stability
+                            </span>
+                        </span>
+                    </h3>
+                    <div id="network-capacity" class="space-y-3">
+                        <!-- Generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Packet Loss Simulator -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 uppercase tracking-wide">
+                        <span class="tooltip">
+                            Packet Loss Impact
+                            <span class="tooltiptext">
+                                Simulates the effect of network packet loss.
+                                <br><br>
+                                Even 0.1% loss can cause audible artifacts
+                            </span>
+                        </span>
+                    </h3>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Packet Loss Rate: <span id="packet-loss-value" class="font-semibold text-slate-600 dark:text-slate-400">0.0%</span>
+                        </label>
+                        <input type="range" id="packet-loss" min="0" max="5" step="0.1" value="0" class="w-full">
+                        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <span>0%</span>
+                            <span>5%</span>
+                        </div>
+                    </div>
+                    <div id="packet-loss-impact" class="text-xs text-gray-700 dark:text-gray-300 space-y-2">
+                        <!-- Generated dynamically -->
+                    </div>
+                </div>
             </div>
         </div>
 
