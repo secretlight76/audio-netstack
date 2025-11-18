@@ -1,17 +1,32 @@
 # 🚀 Guide de Déploiement Cloudflare Pages
 
-## ⚠️ Problème Identifié
+## ⚠️ Problèmes Identifiés et Résolus
+
+### Problème 1 : Mauvais commit déployé
 
 L'erreur `ENOENT: no such file or directory, open '/opt/buildhome/repo/package.json'` indique que **Cloudflare Pages déploie le mauvais commit**.
 
-### Diagnostic
-
-Dans les logs de build Cloudflare :
+Dans les logs de build :
 ```
 HEAD is now at 448c87f Ajout du Visualisateur de Stacks Réseau Audio : Dante & AES67
 ```
 
 Le commit `448c87f` est **obsolète** - il contient uniquement `index.html` **SANS la structure npm moderne**.
+
+### Problème 2 : Configuration wrangler.toml incompatible ✅ CORRIGÉ
+
+Erreur rencontrée :
+```
+✘ ERROR Running configuration file validation for Pages:
+  - Configuration file for Pages projects does not support "build"
+```
+
+**Cause** : La section `[build]` dans `wrangler.toml` est uniquement supportée pour **Cloudflare Workers**, PAS pour Pages.
+
+**Solution appliquée** :
+- ✅ Supprimé la section `[build]` de `wrangler.toml`
+- ✅ Simplifié `.cloudflare/pages.json` aux champs essentiels
+- ✅ La configuration build se fait via `pages.json` uniquement
 
 ### ✅ Commit Correct
 
